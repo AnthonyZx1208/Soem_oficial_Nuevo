@@ -1,4 +1,4 @@
-<%@page contentType="text/html" pageEncoding="UTF-8"%><%@page import="java.util.Map"%><%String ctx=request.getContextPath();Map<String,Object> p=(Map<String,Object>)request.getAttribute("perfil");%><!doctype html>
+<%@page contentType="text/html" pageEncoding="UTF-8"%><%@page import="java.util.Map,Seguridad.Util"%><%String ctx=request.getContextPath();Map<String,Object> p=(Map<String,Object>)request.getAttribute("perfil");%><!doctype html>
 <html lang="es">
     <head>
         <meta charset="UTF-8">
@@ -14,19 +14,19 @@
     <div class="row">
         <div class="col-md-6">
             <label class="form-label">Nombre</label>
-            <input class="form-control mb-3" name="nombre" value="<%=p.get("Nombre_Usuario")%>" required>
+            <input class="form-control mb-3" name="nombre" value="<%=Util.escapeHtml(p.get("Nombre_Usuario"))%>" required>
         </div>
         <div class="col-md-6">
             <label class="form-label">Apellido</label>
-            <input class="form-control mb-3" name="apellido" value="<%=p.get("Apellido_Usuario")%>" required>
+            <input class="form-control mb-3" name="apellido" value="<%=Util.escapeHtml(p.get("Apellido_Usuario"))%>" required>
         </div>
     </div>
     <label class="form-label">Correo</label>
-    <input class="form-control mb-3" value="<%=p.get("correo")%>" disabled>
+    <input class="form-control mb-3" value="<%=Util.escapeHtml(p.get("correo"))%>" disabled>
     <label class="form-label">Teléfono</label>
-    <input class="form-control mb-3" name="telefono" value="<%=p.get("Telefono")==null?"":p.get("Telefono")%>">
+    <input class="form-control mb-3" name="telefono" value="<%=Util.escapeHtml(p.get("Telefono"))%>">
     <label class="form-label">Dirección</label>
-    <input class="form-control mb-4" name="direccion" value="<%=p.get("Direccion")==null?"":p.get("Direccion")%>">
+    <input class="form-control mb-4" name="direccion" value="<%=Util.escapeHtml(p.get("Direccion"))%>">
     <button class="btn btn-gold">Guardar cambios</button>
 </form>
 </main><%@include file="footer.jsp"%></body>

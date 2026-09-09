@@ -1,4 +1,4 @@
-<%@page contentType="text/html" pageEncoding="UTF-8"%><%@page import="java.util.*,Modelo.Producto,Modelo.Categoria,java.text.NumberFormat"%><%String ctx=request.getContextPath();NumberFormat cop=NumberFormat.getCurrencyInstance(new Locale("es","CO"));%><!doctype html>
+<%@page contentType="text/html" pageEncoding="UTF-8"%><%@page import="java.util.*,Modelo.Producto,Modelo.Categoria,java.text.NumberFormat,Seguridad.Util"%><%String ctx=request.getContextPath();NumberFormat cop=NumberFormat.getCurrencyInstance(new Locale("es","CO"));%><!doctype html>
 <html lang="es">
     <head>
         <meta charset="UTF-8">
@@ -26,9 +26,9 @@
         <div class="row g-4"><%for(Categoria c:(List<Categoria>)request.getAttribute("categorias")){%><div class="col-6 col-lg-3">
         <a class="text-decoration-none text-dark" href="<%=ctx%>/categoria?id=<%=c.getId_categoria()%>">
             <article class="category-card h-100">
-                <img src="<%=c.getImagen_url()==null?"https://images.unsplash.com/photo-1445205170230-053b83016050?auto=format&fit=crop&w=600&q=80":c.getImagen_url()%>" alt="<%=c.getNombre_categoria()%>">
+                <img src="<%=c.getImagen_url()==null?"https://images.unsplash.com/photo-1445205170230-053b83016050?auto=format&fit=crop&w=600&q=80":c.getImagen_url()%>" alt="<%=Util.escapeHtml(c.getNombre_categoria())%>">
                 <div class="p-3">
-                    <strong><%=c.getNombre_categoria()%></strong>
+                    <strong><%=Util.escapeHtml(c.getNombre_categoria())%></strong>
                     <span class="float-end text-gold">→</span>
                 </div>
             </article>
@@ -41,10 +41,10 @@
     <div class="row g-4"><%for(Producto p:(List<Producto>)request.getAttribute("productosDestacados")){double precio=p.getPrecio_oferta()!=null?p.getPrecio_oferta():p.getPrecio_producto();int descuento=p.getPrecio_oferta()==null?0:(int)((p.getPrecio_producto()-p.getPrecio_oferta())*100/p.getPrecio_producto());%><div class="col-sm-6 col-lg-4">
     <article class="product-card h-100">
         <div class="position-relative">
-            <img class="product-image" src="<%=p.getImagen_principal()!=null&&p.getImagen_principal().startsWith("http")?p.getImagen_principal():ctx+"/"+p.getImagen_principal()%>" alt="<%=p.getNombre_producto()%>"><%if(p.getCantidad_stock()==0){%><span class="badge badge-stockout position-absolute top-0 start-0 m-3">SIN STOCK</span><%}else if(descuento>0){%><span class="badge badge-offer position-absolute top-0 start-0 m-3">-<%=descuento%>% OFERTA</span><%}%></div>
+            <img class="product-image" src="<%=p.getImagen_principal()!=null&&p.getImagen_principal().startsWith("http")?p.getImagen_principal():ctx+"/"+p.getImagen_principal()%>" alt="<%=Util.escapeHtml(p.getNombre_producto())%>"><%if(p.getCantidad_stock()==0){%><span class="badge badge-stockout position-absolute top-0 start-0 m-3">SIN STOCK</span><%}else if(descuento>0){%><span class="badge badge-offer position-absolute top-0 start-0 m-3">-<%=descuento%>% OFERTA</span><%}%></div>
             <div class="card-body d-flex flex-column">
-                <h3 class="h6"><%=p.getNombre_producto()%></h3>
-                <p class="text-secondary small"><%=p.getDescripcion()%></p>
+                <h3 class="h6"><%=Util.escapeHtml(p.getNombre_producto())%></h3>
+                <p class="text-secondary small"><%=Util.escapeHtml(p.getDescripcion())%></p>
                 <p class="mb-1"><%if(descuento>0){%><span class="old-price"><%=cop.format(p.getPrecio_producto())%></span><%}%> <span class="price"><%=cop.format(precio)%></span>
             </p>
             <p class="<%=p.getCantidad_stock()>0?"stock-ok":"stock-out"%>"><%=p.getCantidad_stock()>0?p.getCantidad_stock()+" unidades disponibles":"Sin disponibilidad"%></p>

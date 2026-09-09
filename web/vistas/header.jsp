@@ -1,5 +1,5 @@
 <%@ page contentType="text/html" pageEncoding="UTF-8" %>
-<%@ page import="java.util.List,Modelo.CarritoCompra,Controlador.TiendaDAO,Seguridad.SeguridadAplicacion" %>
+<%@ page import="java.util.List,Modelo.CarritoCompra,Controlador.TiendaDAO,Seguridad.SeguridadAplicacion,Seguridad.Util" %>
 <%
 HttpSession sesion=request.getSession(false); Integer usuarioId=sesion==null?null:(Integer)sesion.getAttribute("usuarioId"); Integer usuarioRol=sesion==null?null:(Integer)sesion.getAttribute("usuarioRol"); String usuarioNombre=sesion==null?null:(String)sesion.getAttribute("usuarioNombre"); int carrito=0; if(sesion!=null&&sesion.getAttribute("carrito") instanceof List) for(CarritoCompra item:(List<CarritoCompra>)sesion.getAttribute("carrito")) carrito+=item.getCantidad(); int deseos=usuarioId==null?0:new TiendaDAO().contarDeseos(usuarioId); String csrf=SeguridadAplicacion.csrf(request.getSession()); String appCtx=request.getContextPath();
 %>
@@ -29,7 +29,7 @@ HttpSession sesion=request.getSession(false); Integer usuarioId=sesion==null?nul
         </a>
         <a class="header-action" href="<%=appCtx%>/cart?action=view" aria-label="Carrito">🛍<span><%=carrito%></span>
     </a><%if(usuarioId==null){%><a class="btn btn-gold btn-sm" href="<%=appCtx%>/login">Ingresar</a><%}else{%><div class="dropdown">
-    <button class="btn btn-outline-light btn-sm dropdown-toggle" data-bs-toggle="dropdown"><%=usuarioNombre%></button>
+    <button class="btn btn-outline-light btn-sm dropdown-toggle" data-bs-toggle="dropdown"><%=Util.escapeHtml(usuarioNombre)%></button>
     <ul class="dropdown-menu dropdown-menu-end">
         <li>
             <a class="dropdown-item" href="<%=appCtx%>/profile">Mi perfil</a>

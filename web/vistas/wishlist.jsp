@@ -1,4 +1,4 @@
-<%@page contentType="text/html" pageEncoding="UTF-8"%><%@page import="java.util.*,java.text.NumberFormat"%><%String ctx=request.getContextPath();List<Map<String,Object>> deseos=(List<Map<String,Object>>)request.getAttribute("deseos");NumberFormat cop=NumberFormat.getCurrencyInstance(new Locale("es","CO"));%><!doctype html>
+<%@page contentType="text/html" pageEncoding="UTF-8"%><%@page import="java.util.*,java.text.NumberFormat,Seguridad.Util"%><%String ctx=request.getContextPath();List<Map<String,Object>> deseos=(List<Map<String,Object>>)request.getAttribute("deseos");NumberFormat cop=NumberFormat.getCurrencyInstance(new Locale("es","CO"));%><!doctype html>
 <html lang="es">
     <head>
         <meta charset="UTF-8">
@@ -14,7 +14,7 @@
     <article class="product-card">
         <%String imagen=String.valueOf(p.get("imagen_principal"));%><img class="product-image" src="<%=imagen.startsWith("http")?imagen:ctx+"/"+imagen%>" alt="">
         <div class="card-body">
-            <h2 class="h6"><%=p.get("nombre_producto")%></h2>
+            <h2 class="h6"><%=Util.escapeHtml(p.get("nombre_producto"))%></h2>
             <p class="price"><%=cop.format(p.get("precio_oferta")!=null?p.get("precio_oferta"):p.get("precio_producto"))%></p>
             <div class="d-flex gap-2">
                 <a class="btn btn-dark btn-sm flex-grow-1" href="<%=ctx%>/producto?id=<%=p.get("id_producto")%>">Ver</a>

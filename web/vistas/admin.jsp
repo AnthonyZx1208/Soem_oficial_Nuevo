@@ -1,4 +1,4 @@
-<%@page contentType="text/html" pageEncoding="UTF-8"%><%@page import="java.util.*,java.text.NumberFormat"%><%String ctx=request.getContextPath();List<Map<String,Object>> ordenes=(List<Map<String,Object>>)request.getAttribute("ordenes");%><!doctype html>
+<%@page contentType="text/html" pageEncoding="UTF-8"%><%@page import="java.util.*,java.text.NumberFormat,Seguridad.Util"%><%String ctx=request.getContextPath();List<Map<String,Object>> ordenes=(List<Map<String,Object>>)request.getAttribute("ordenes");%><!doctype html>
 <html lang="es">
     <head>
         <meta charset="UTF-8">
@@ -51,8 +51,8 @@
         <td>
             <strong><%=o.get("numero_orden")%></strong>
         </td>
-        <td><%=o.get("Nombre_Usuario")%> <%=o.get("Apellido_Usuario")%><br>
-        <small><%=o.get("correo")%></small>
+        <td><%=Util.escapeHtml(o.get("Nombre_Usuario"))%> <%=Util.escapeHtml(o.get("Apellido_Usuario"))%><br>
+        <small><%=Util.escapeHtml(o.get("correo"))%></small>
     </td>
     <td>$<%=o.get("total_compra")%></td>
     <td><%=o.get("estado_compra")%></td>

@@ -1,4 +1,4 @@
-<%@page contentType="text/html" pageEncoding="UTF-8"%><%@page import="java.util.*,java.text.NumberFormat"%><%String ctx=request.getContextPath();List<Map<String,Object>> ordenes=(List<Map<String,Object>>)request.getAttribute("ordenes");List<Map<String,Object>> historial=(List<Map<String,Object>>)request.getAttribute("historial");NumberFormat cop=NumberFormat.getCurrencyInstance(new Locale("es","CO"));%><!doctype html>
+<%@page contentType="text/html" pageEncoding="UTF-8"%><%@page import="java.util.*,java.text.NumberFormat,Seguridad.Util"%><%String ctx=request.getContextPath();List<Map<String,Object>> ordenes=(List<Map<String,Object>>)request.getAttribute("ordenes");List<Map<String,Object>> historial=(List<Map<String,Object>>)request.getAttribute("historial");NumberFormat cop=NumberFormat.getCurrencyInstance(new Locale("es","CO"));%><!doctype html>
 <html lang="es">
     <head>
         <meta charset="UTF-8">
@@ -17,13 +17,13 @@
                 <strong><%=o.get("numero_orden")%></strong>
                 <strong><%=cop.format(o.get("total_compra"))%></strong>
             </div>
-            <small><%=o.get("estado_compra")%> · <%=o.get("fecha_compra")%></small><%if(o.get("motivo_rechazo")!=null){%><div class="text-danger small"><%=o.get("motivo_rechazo")%></div><%}%></a><%}%></div>
+            <small><%=o.get("estado_compra")%> · <%=o.get("fecha_compra")%></small><%if(o.get("motivo_rechazo")!=null){%><div class="text-danger small"><%=Util.escapeHtml(o.get("motivo_rechazo"))%></div><%}%></a><%}%></div>
         </div>
         <div class="col-lg-5">
             <h2 class="h5">Línea de tiempo</h2>
             <div class="timeline bg-white p-4"><%if(historial!=null){for(Map<String,Object> h:historial){%><div class="timeline-item">
             <strong><%=h.get("estado")%></strong>
-            <div class="small text-secondary"><%=h.get("detalle")%></div>
+            <div class="small text-secondary"><%=Util.escapeHtml(h.get("detalle"))%></div>
             <small><%=h.get("fecha")%></small>
         </div><%}}else{%><p class="text-secondary">Selecciona una compra para ver su seguimiento.</p><%}%></div>
     </div>
