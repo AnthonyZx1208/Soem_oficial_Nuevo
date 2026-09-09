@@ -9,6 +9,7 @@ import Controlador.CategoriaDAO;
 import Modelo.Producto;
 import Modelo.Categoria;
 import java.io.IOException;
+import java.util.ArrayList;
 import java.util.List;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.annotation.WebServlet;
@@ -36,6 +37,30 @@ public class HomeServlet extends HttpServlet {
         ProductoDAO productoDAO = new ProductoDAO();
         List<Producto> productosDestacados = productoDAO.listarProductosPorEstado("Activo");
         request.setAttribute("productosDestacados", productosDestacados);
+
+        String termino = request.getParameter("q");
+        if (termino != null && !termino.isBlank()) {
+            String buscado = termino.trim().toLowerCase();
+            List<Producto> resultados = new ArrayList<>();
+            for (Producto p : productosDestacados) {
+                if (p.getNombre_producto() != null && p.getNombre_producto().toLowerCase().contains(buscado)) {
+                    resultados.add(p);
+                }
+            }
+            request.setAttribute("resultadosBusqueda", resultados);
+        } else {
+            List<Producto> ofertas = new ArrayList<>();
+            int maxDescuento = 0;
+            for (Producto p : productosDestacados) {
+                if (p.getPrecio_oferta() != null) {
+                    ofertas.add(p);
+                    int descuento = (int) ((p.getPrecio_producto() - p.getPrecio_oferta()) * 100 / p.getPrecio_producto());
+                    if (descuento > maxDescuento) maxDescuento = descuento;
+                }
+            }
+            request.setAttribute("ofertas", ofertas);
+            request.setAttribute("maxDescuento", maxDescuento);
+        }
 
         // Redirigir a la vista
         request.getRequestDispatcher("/vistas/home.jsp").forward(request, response);

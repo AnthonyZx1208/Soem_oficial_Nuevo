@@ -1,5 +1,5 @@
 <%@ page contentType="text/html" pageEncoding="UTF-8" %>
-<%@ page import="java.util.List,java.util.Set,java.util.Collections,Modelo.CarritoCompra,Modelo.ConfiguracionSitio,Controlador.TiendaDAO,Controlador.ConfiguracionDAO,Controlador.PermisosDAO,Seguridad.SeguridadAplicacion,Seguridad.Util" %>
+<%@ page import="java.util.List,java.util.Set,java.util.Collections,Modelo.CarritoCompra,Modelo.ConfiguracionSitio,Modelo.Categoria,Controlador.TiendaDAO,Controlador.ConfiguracionDAO,Controlador.CategoriaDAO,Controlador.PermisosDAO,Seguridad.SeguridadAplicacion,Seguridad.Util" %>
 <%
 HttpSession sesion=request.getSession(false); Integer usuarioId=sesion==null?null:(Integer)sesion.getAttribute("usuarioId"); Integer usuarioRol=sesion==null?null:(Integer)sesion.getAttribute("usuarioRol"); String usuarioNombre=sesion==null?null:(String)sesion.getAttribute("usuarioNombre"); int carrito=0; if(sesion!=null&&sesion.getAttribute("carrito") instanceof List) for(CarritoCompra item:(List<CarritoCompra>)sesion.getAttribute("carrito")) carrito+=item.getCantidad(); int deseos=usuarioId==null?0:new TiendaDAO().contarDeseos(usuarioId); String csrf=SeguridadAplicacion.csrf(request.getSession()); String appCtx=request.getContextPath(); ConfiguracionSitio identidad=new ConfiguracionDAO().obtener(); String nombreTienda=identidad.getNombreTienda()!=null?identidad.getNombreTienda().toUpperCase():"SOEM OFICIAL"; int espacio=nombreTienda.indexOf(' '); String marcaPrincipal=espacio<0?nombreTienda:nombreTienda.substring(0,espacio); String marcaResto=espacio<0?"":nombreTienda.substring(espacio+1);
 Set<String> misPermisos=usuarioRol==null?Collections.emptySet():new PermisosDAO().permisosDeRol(usuarioRol);
@@ -8,10 +8,15 @@ boolean puedeCategorias=misPermisos.contains("Gestionar categorías");
 boolean puedeProductos=misPermisos.contains("Gestionar productos");
 boolean puedeIdentidad=misPermisos.contains("Gestionar configuración");
 boolean puedeUsuarios=misPermisos.contains("Gestionar usuarios");
+boolean esPersonalAdmin=puedeCompras||puedeCategorias||puedeProductos||puedeIdentidad||puedeUsuarios;
+List<Categoria> categoriasNav=new CategoriaDAO().listarCategorias();
 %>
-<style>:root{--gold:<%=identidad.getColorAcento()%>;--ink:<%=identidad.getColorPrimario()%>;}</style>
+<div class="ticker"><div class="ticker-track">
+    <span>PAGO SEGURO POR NEQUI</span><span>ENVÍOS A TODA COLOMBIA</span><span>ATENCIÓN POR WHATSAPP <%=Util.escapeHtml(identidad.getContactoWhatsapp())%></span>
+    <span>PAGO SEGURO POR NEQUI</span><span>ENVÍOS A TODA COLOMBIA</span><span>ATENCIÓN POR WHATSAPP <%=Util.escapeHtml(identidad.getContactoWhatsapp())%></span>
+</div></div>
 <header class="site-header sticky-top">
-    <nav class="navbar navbar-expand-lg navbar-dark container py-3">
+    <nav class="navbar navbar-expand-lg navbar-light container py-3">
         <a class="navbar-brand brand" href="<%=appCtx%>/home"><%if(identidad.getLogoUrl()!=null){%><img src="<%=appCtx%>/<%=identidad.getLogoUrl()%>" alt="<%=Util.escapeHtml(identidad.getNombreTienda())%>" style="height:32px"><%}else{%><%=Util.escapeHtml(marcaPrincipal)%> <span><%=Util.escapeHtml(marcaResto)%></span><%}%>
     </a>
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#menu">
@@ -19,40 +24,41 @@ boolean puedeUsuarios=misPermisos.contains("Gestionar usuarios");
         </span>
     </button>
     <div class="collapse navbar-collapse" id="menu">
-        <ul class="navbar-nav mx-auto">
+        <ul class="navbar-nav mx-auto"><%for(Categoria c:categoriasNav){%>
             <li class="nav-item">
-                <a class="nav-link" href="<%=appCtx%>/home">Inicio</a>
-            </li>
-            <li class="nav-item">
-                <a class="nav-link" href="<%=appCtx%>/home#categorias">Colecciones</a>
-            </li>
-            <li class="nav-item">
-                <a class="nav-link" href="<%=appCtx%>/home#productos">Novedades</a>
-            </li><%if(puedeCompras){%><li class="nav-item">
-            <a class="nav-link" href="<%=appCtx%>/admin">Administración</a>
-        </li><%}if(puedeCategorias){%><li class="nav-item">
-            <a class="nav-link" href="<%=appCtx%>/admin/categorias">Categorías</a>
-        </li><%}if(puedeProductos){%><li class="nav-item">
-            <a class="nav-link" href="<%=appCtx%>/admin/productos">Productos</a>
-        </li><%}if(puedeIdentidad){%><li class="nav-item">
-            <a class="nav-link" href="<%=appCtx%>/admin/identidad">Identidad</a>
-        </li><%}if(puedeUsuarios){%><li class="nav-item">
-            <a class="nav-link" href="<%=appCtx%>/admin/usuarios">Usuarios</a>
-        </li><%}%></ul>
+                <a class="nav-link" href="<%=appCtx%>/categoria?id=<%=c.getId_categoria()%>"><%=Util.escapeHtml(c.getNombre_categoria())%></a>
+            </li><%}%></ul>
         <div class="d-flex align-items-center gap-2">
+            <button class="icon-btn" type="button" aria-label="Buscar" onclick="document.getElementById('cajaBusqueda').classList.toggle('mostrar')">🔍</button>
             <a class="header-action" href="<%=appCtx%>/wishlist" aria-label="Lista de deseos">♥<span><%=deseos%></span>
         </a>
         <a class="header-action" href="<%=appCtx%>/cart?action=view" aria-label="Carrito">🛍<span><%=carrito%></span>
-    </a><%if(usuarioId==null){%><a class="btn btn-gold btn-sm" href="<%=appCtx%>/login">Ingresar</a><%}else{%><div class="dropdown">
-    <button class="btn btn-outline-light btn-sm dropdown-toggle" data-bs-toggle="dropdown"><%=Util.escapeHtml(usuarioNombre)%></button>
+    </a><%if(usuarioId==null){%><a class="icon-btn" href="<%=appCtx%>/login" aria-label="Ingresar">👤</a><%}else{%><div class="dropdown">
+    <button class="icon-btn dropdown-toggle" data-bs-toggle="dropdown" aria-label="Mi cuenta">👤</button>
     <ul class="dropdown-menu dropdown-menu-end">
+        <li>
+            <h6 class="dropdown-header"><%=Util.escapeHtml(usuarioNombre)%></h6>
+        </li>
         <li>
             <a class="dropdown-item" href="<%=appCtx%>/profile">Mi perfil</a>
         </li>
         <li>
             <a class="dropdown-item" href="<%=appCtx%>/orders">Mis compras</a>
-        </li>
-        <li>
+        </li><%if(esPersonalAdmin){%><li>
+            <hr class="dropdown-divider">
+        </li><li>
+            <h6 class="dropdown-header">Administración</h6>
+        </li><%}if(puedeCompras){%><li>
+            <a class="dropdown-item" href="<%=appCtx%>/admin">Órdenes</a>
+        </li><%}if(puedeCategorias){%><li>
+            <a class="dropdown-item" href="<%=appCtx%>/admin/categorias">Categorías</a>
+        </li><%}if(puedeProductos){%><li>
+            <a class="dropdown-item" href="<%=appCtx%>/admin/productos">Productos</a>
+        </li><%}if(puedeIdentidad){%><li>
+            <a class="dropdown-item" href="<%=appCtx%>/admin/identidad">Identidad</a>
+        </li><%}if(puedeUsuarios){%><li>
+            <a class="dropdown-item" href="<%=appCtx%>/admin/usuarios">Usuarios</a>
+        </li><%}%><li>
             <hr class="dropdown-divider">
         </li>
         <li>
@@ -62,4 +68,9 @@ boolean puedeUsuarios=misPermisos.contains("Gestionar usuarios");
 </div><%}%></div>
 </div>
 </nav>
+<div class="search-box" id="cajaBusqueda">
+    <form class="container d-flex" method="get" action="<%=appCtx%>/home">
+        <input class="form-control" type="search" name="q" placeholder="Buscar productos..." value="<%=Util.escapeHtml(request.getParameter("q"))%>" autofocus>
+    </form>
+</div>
 </header>
