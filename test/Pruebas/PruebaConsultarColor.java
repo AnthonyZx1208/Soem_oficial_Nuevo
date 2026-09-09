@@ -1,17 +1,9 @@
-/*
- * Click nbfs://nbhost/SystemFileSystem/Templates/Licenses/license-default.txt to change this license
- * Click nbfs://nbhost/SystemFileSystem/Templates/Classes/Main.java to edit this template
- */
 package Pruebas;
 
 import Controlador.ColoresDAO;
 import Modelo.Colores;
 import java.util.Scanner;
 
-/**
- *
- * @author Aprendiz
- */
 public class PruebaConsultarColor {
 
     public static void main(String[] args) {
@@ -24,8 +16,9 @@ public class PruebaConsultarColor {
 
         Colores miColor = miColoresDAO.consultarColor(idColor);
         if (miColor != null) {
-            System.out.println("ID: " + miColor.getIdNombreColor());
-            System.out.println("Codigo RGB: " + miColor.getCodigoRGB());
+            System.out.println("ID: " + miColor.getIdColor());
+            System.out.println("Nombre: " + miColor.getNombreColor());
+            System.out.println("Codigo hexadecimal: " + miColor.getCodigoHexadecimal());
         } else {
             System.out.println("Color no encontrado");
         }

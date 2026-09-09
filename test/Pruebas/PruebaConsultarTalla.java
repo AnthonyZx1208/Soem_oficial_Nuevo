@@ -1,17 +1,9 @@
-/*
- * Click nbfs://nbhost/SystemFileSystem/Templates/Licenses/license-default.txt to change this license
- * Click nbfs://nbhost/SystemFileSystem/Templates/Classes/Main.java to edit this template
- */
 package Pruebas;
 
 import Controlador.TallaDAO;
 import Modelo.Talla;
 import java.util.Scanner;
 
-/**
- *
- * @author Aprendiz
- */
 public class PruebaConsultarTalla {
 
     public static void main(String[] args) {
@@ -25,7 +17,7 @@ public class PruebaConsultarTalla {
         Talla miTalla = miTallaDAO.consultarTalla(idTalla);
         if (miTalla != null) {
             System.out.println("ID: " + miTalla.getIdTalla());
-            System.out.println("Descripcion: " + miTalla.getDescripcionTalla());
+            System.out.println("Nombre: " + miTalla.getNombreTalla());
         } else {
             System.out.println("Talla no encontrada");
         }

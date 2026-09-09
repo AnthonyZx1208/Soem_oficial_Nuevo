@@ -1,17 +1,9 @@
-/*
- * Click nbfs://nbhost/SystemFileSystem/Templates/Licenses/license-default.txt to change this license
- * Click nbfs://nbhost/SystemFileSystem/Templates/Classes/Main.java to edit this template
- */
 package Pruebas;
 
 import Controlador.TallaDAO;
 import Modelo.Talla;
 import java.util.Scanner;
 
-/**
- *
- * @author Aprendiz
- */
 public class PruebaActualizarTalla {
 
     public static void main(String[] args) {
@@ -25,8 +17,8 @@ public class PruebaActualizarTalla {
         sc.nextLine();
         miTalla.setIdTalla(idActualizar);
 
-        System.out.println("Por favor ingrese la nueva Descripcion:");
-        miTalla.setDescripcionTalla(sc.nextLine());
+        System.out.println("Por favor ingrese el nuevo nombre:");
+        miTalla.setNombreTalla(sc.nextLine());
 
         boolean respuesta = dao.actualizarTalla(miTalla);
         if (respuesta) {

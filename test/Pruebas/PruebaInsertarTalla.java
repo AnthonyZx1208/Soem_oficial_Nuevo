@@ -1,17 +1,9 @@
-/*
- * Click nbfs://nbhost/SystemFileSystem/Templates/Licenses/license-default.txt to change this license
- * Click nbfs://nbhost/SystemFileSystem/Templates/Classes/Main.java to edit this template
- */
 package Pruebas;
 
 import Controlador.TallaDAO;
 import Modelo.Talla;
 import java.util.Scanner;
 
-/**
- *
- * @author Aprendiz
- */
 public class PruebaInsertarTalla {
 
     public static void main(String[] args) {
@@ -20,8 +12,8 @@ public class PruebaInsertarTalla {
         TallaDAO dao = new TallaDAO();
 
         System.out.println("=== INSERTAR TALLA ===");
-        System.out.println("Por favor Ingrese la Descripcion de la Talla:");
-        miTalla.setDescripcionTalla(sc.nextLine());
+        System.out.println("Por favor Ingrese el nombre de la Talla (ej: M):");
+        miTalla.setNombreTalla(sc.nextLine());
 
         boolean resultado = dao.insertarTalla(miTalla);
         if (resultado) {

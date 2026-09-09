@@ -1,17 +1,9 @@
-/*
- * Click nbfs://nbhost/SystemFileSystem/Templates/Licenses/license-default.txt to change this license
- * Click nbfs://nbhost/SystemFileSystem/Templates/Classes/Main.java to edit this template
- */
 package Pruebas;
 
 import Controlador.ColoresDAO;
 import Modelo.Colores;
 import java.util.Scanner;
 
-/**
- *
- * @author Aprendiz
- */
 public class PruebaInsertarColor {
 
     public static void main(String[] args) {
@@ -20,8 +12,11 @@ public class PruebaInsertarColor {
         ColoresDAO dao = new ColoresDAO();
 
         System.out.println("=== INSERTAR COLOR ===");
-        System.out.println("Por favor Ingrese el Codigo RGB (ej: #FF0000):");
-        miColor.setCodigoRGB(sc.nextLine());
+        System.out.println("Por favor Ingrese el nombre del color (ej: Negro):");
+        miColor.setNombreColor(sc.nextLine());
+
+        System.out.println("Por favor Ingrese el codigo hexadecimal (ej: #000000):");
+        miColor.setCodigoHexadecimal(sc.nextLine());
 
         boolean resultado = dao.insertarColor(miColor);
         if (resultado) {
