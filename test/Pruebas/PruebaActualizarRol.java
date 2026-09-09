@@ -28,7 +28,7 @@ public class PruebaActualizarRol {
         miRol.setNombreRol(sc.nextLine());
 
         System.out.println("Ingrese la nueva Descripcion del Rol:");
-        miRol.setDescripRol(sc.nextLine());
+        miRol.setDescripcion(sc.nextLine());
 
         boolean resultado = dao.actualizarRol(miRol);
         if (resultado) {

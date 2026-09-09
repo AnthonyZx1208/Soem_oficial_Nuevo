@@ -10,23 +10,32 @@ package Modelo;
  */
 public class Permisos {
 
-    public int getIdPermisos() {
-        return idPermisos;
+    public int getIdPermiso() {
+        return idPermiso;
     }
 
-    public void setIdPermisos(int idPermisos) {
-        this.idPermisos = idPermisos;
+    public void setIdPermiso(int idPermiso) {
+        this.idPermiso = idPermiso;
     }
 
-    public String getDescripPermisos() {
-        return descripPermisos;
+    public String getNombrePermiso() {
+        return nombrePermiso;
     }
 
-    public void setDescripPermisos(String descripPermisos) {
-        this.descripPermisos = descripPermisos;
+    public void setNombrePermiso(String nombrePermiso) {
+        this.nombrePermiso = nombrePermiso;
     }
-    
-    private int idPermisos;
-    private String descripPermisos;
-    
+
+    public String getDescripcion() {
+        return descripcion;
+    }
+
+    public void setDescripcion(String descripcion) {
+        this.descripcion = descripcion;
+    }
+
+    private int idPermiso;
+    private String nombrePermiso;
+    private String descripcion;
+
 }

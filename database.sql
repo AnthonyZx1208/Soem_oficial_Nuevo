@@ -263,8 +263,8 @@ CREATE TABLE Configuracion_Sitio (
 INSERT INTO TipoDocumento (nombre_tipo, descripcion) VALUES
 ('Cédula de Ciudadanía','CC'),('Tarjeta de Identidad','TI'),('Cédula de Extranjería','CE'),('Pasaporte','PP');
 INSERT INTO Roles (nombre_rol, descripcion) VALUES ('Admin','Control total'),('Cliente','Comprador de la tienda'),('Vendedor','Gestión comercial');
-INSERT INTO Permisos (nombre_permiso, descripcion) VALUES ('Gestionar productos','Crear y editar productos'),('Gestionar categorías','Crear y editar categorías'),('Procesar compras','Actualizar estados'),('Gestionar configuración','Identidad visual');
-INSERT INTO Roles_Has_Permisos VALUES (1,1),(1,2),(1,3),(1,4),(3,1),(3,3);
+INSERT INTO Permisos (nombre_permiso, descripcion) VALUES ('Gestionar productos','Crear y editar productos'),('Gestionar categorías','Crear y editar categorías'),('Procesar compras','Actualizar estados'),('Gestionar configuración','Identidad visual'),('Gestionar usuarios','Ver clientes y crear cuentas de personal');
+INSERT INTO Roles_Has_Permisos VALUES (1,1),(1,2),(1,3),(1,4),(1,5),(3,1),(3,3);
 INSERT INTO Metodo_Pago (nombre_metodo, descripcion) VALUES ('NEqui','Transferencia a NEqui'),('Transferencia','Transferencia bancaria');
 INSERT INTO Talla (nombre_talla) VALUES ('XS'),('S'),('M'),('L'),('XL'),('XXL'),('Única');
 INSERT INTO Colores (nombre_color,codigo_hexadecimal) VALUES ('Negro','#000000'),('Blanco','#FFFFFF'),('Dorado','#C9A24D'),('Azul','#1D4ED8'),('Rosado','#EC4899');

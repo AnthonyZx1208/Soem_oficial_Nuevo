@@ -15,7 +15,8 @@
         <input class="form-control mb-3" name="correo" type="email" required autocomplete="email">
         <label class="form-label">Contraseña</label>
         <input class="form-control mb-4" name="contrasena" type="password" required autocomplete="current-password">
-        <button class="btn btn-dark w-100">Ingresar</button>
+        <button class="btn btn-dark w-100" type="submit" name="modo" value="cliente">Ingresar como cliente</button>
+        <button class="btn btn-outline-dark w-100 mt-2" type="submit" name="modo" value="admin">Ingresar como administrador</button>
         <p class="text-center mt-3 mb-0">¿No tienes cuenta? <a href="<%=ctx%>/register">Regístrate</a>
     </p>
 </form>

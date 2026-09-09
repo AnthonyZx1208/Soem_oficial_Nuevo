@@ -1,17 +1,10 @@
-/*
- * Click nbfs://nbhost/SystemFileSystem/Templates/Licenses/license-default.txt to change this license
- * Click nbfs://nbhost/SystemFileSystem/Templates/Classes/Main.java to edit this template
- */
 package Pruebas;
 
 import Controlador.RolesHasPermisosDAO;
 import Modelo.RolesHasPermisos;
+import java.util.List;
 import java.util.Scanner;
 
-/**
- *
- * @author Aprendiz
- */
 public class PruebaConsultarRolesHasPermisos {
 
     public static void main(String[] args) {
@@ -25,10 +18,11 @@ public class PruebaConsultarRolesHasPermisos {
         System.out.println("Ingrese el ID del Permiso:");
         int idPermiso = sc.nextInt();
 
-        RolesHasPermisos miRelacion = dao.consultarRolesHasPermisos(idRol, idPermiso);
-        if (miRelacion != null) {
-            System.out.println("ID Rol: " + miRelacion.getRolesIdRol());
-            System.out.println("ID Permiso: " + miRelacion.getPermisosIdPermisos());
+        List<RolesHasPermisos> permisosDelRol = dao.listarPorRol(idRol);
+        boolean encontrada = permisosDelRol.stream().anyMatch(r -> r.getPermisosIdPermisos() == idPermiso);
+
+        if (encontrada) {
+            System.out.println("El rol " + idRol + " SI tiene el permiso " + idPermiso);
         } else {
             System.out.println("La relacion Rol-Permiso no fue encontrada");
         }

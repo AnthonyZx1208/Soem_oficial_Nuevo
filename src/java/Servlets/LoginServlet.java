@@ -18,9 +18,18 @@ public class LoginServlet extends HttpServlet {
             return;
         }
         String correo=req.getParameter("correo"), clave=req.getParameter("contrasena");
+        boolean modoAdmin="admin".equals(req.getParameter("modo"));
         Usuario u=new UsuarioDAO().consultarUsuarioPorCorreo(correo==null?"":correo.trim().toLowerCase());
         if(u==null||!SeguridadAplicacion.verificarPassword(clave,u.getContrasena())) {
             req.setAttribute("error","Credenciales inválidas.");
+            req.getRequestDispatcher("/vistas/login.jsp").forward(req,res);
+            return;
+        }
+        // El modo admin es solo una comodidad de navegación (redirige directo
+        // al panel); el control de acceso real sigue siendo el chequeo de
+        // permisos de cada Servlet admin (SeguridadAplicacion.tienePermiso).
+        if(modoAdmin && u.getRolesIdRol()!=1 && u.getRolesIdRol()!=3) {
+            req.setAttribute("error","Esta cuenta no tiene acceso administrativo.");
             req.getRequestDispatcher("/vistas/login.jsp").forward(req,res);
             return;
         }
@@ -35,6 +44,6 @@ public class LoginServlet extends HttpServlet {
         s.setAttribute("usuarioNombre",u.getNombreUsuario());
         s.setAttribute("usuarioRol",u.getRolesIdRol());
         SeguridadAplicacion.csrf(s);
-        res.sendRedirect(req.getContextPath()+"/home");
+        res.sendRedirect(req.getContextPath()+(modoAdmin?"/admin":"/home"));
     }
 }

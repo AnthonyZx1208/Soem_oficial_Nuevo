@@ -4,7 +4,7 @@ import java.sql.*;
 import java.util.*;
 public class UsuarioDAO {
     private final Conexion conect = new Conexion();
-    private static final String CAMPOS="id_Usuario,Nombre_Usuario,Apellido_Usuario,Numero_Documento,Telefono,correo,Contrasena,Direccion,Fecha_nacimiento,Fecha_vencimiento,Autorizacion_datos,Roles_id_rol,TipoDocumento_idTipoDocumento";
+    private static final String CAMPOS="id_Usuario,Nombre_Usuario,Apellido_Usuario,Numero_Documento,Telefono,correo,Contrasena,Direccion,Fecha_nacimiento,Fecha_vencimiento,Autorizacion_datos,Roles_id_rol,TipoDocumento_idTipoDocumento,fecha_registro";
     public boolean insertarUsuario(Usuario u) {
         String sql="INSERT INTO Usuario(Nombre_Usuario,Apellido_Usuario,Numero_Documento,Telefono,correo,Contrasena,Direccion,Fecha_nacimiento,Autorizacion_datos,Roles_id_rol,TipoDocumento_idTipoDocumento) VALUES(?,?,?,?,?,?,?,?,?,?,?)";
         try(Connection c=conect.getConn();PreparedStatement p=c.prepareStatement(sql)) {
@@ -100,6 +100,17 @@ public class UsuarioDAO {
         u.setAutorizacionDatos(r.getString("Autorizacion_datos"));
         u.setRolesIdRol(r.getInt("Roles_id_rol"));
         u.setTipoDocumentoIdTipoDocumento(r.getInt("TipoDocumento_idTipoDocumento"));
+        u.setFechaRegistro(r.getTimestamp("fecha_registro"));
         return u;
+    }
+    public boolean cambiarRol(int idUsuario, int nuevoRolId) {
+        try(Connection c=conect.getConn();PreparedStatement p=c.prepareStatement("UPDATE Usuario SET Roles_id_rol=? WHERE id_Usuario=?")) {
+            if(c==null)return false;
+            p.setInt(1,nuevoRolId);
+            p.setInt(2,idUsuario);
+            return p.executeUpdate()>0;
+        }catch(SQLException e) {
+            return false;
+        }
     }
 }

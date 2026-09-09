@@ -1,7 +1,13 @@
 <%@ page contentType="text/html" pageEncoding="UTF-8" %>
-<%@ page import="java.util.List,Modelo.CarritoCompra,Modelo.ConfiguracionSitio,Controlador.TiendaDAO,Controlador.ConfiguracionDAO,Seguridad.SeguridadAplicacion,Seguridad.Util" %>
+<%@ page import="java.util.List,java.util.Set,java.util.Collections,Modelo.CarritoCompra,Modelo.ConfiguracionSitio,Controlador.TiendaDAO,Controlador.ConfiguracionDAO,Controlador.PermisosDAO,Seguridad.SeguridadAplicacion,Seguridad.Util" %>
 <%
 HttpSession sesion=request.getSession(false); Integer usuarioId=sesion==null?null:(Integer)sesion.getAttribute("usuarioId"); Integer usuarioRol=sesion==null?null:(Integer)sesion.getAttribute("usuarioRol"); String usuarioNombre=sesion==null?null:(String)sesion.getAttribute("usuarioNombre"); int carrito=0; if(sesion!=null&&sesion.getAttribute("carrito") instanceof List) for(CarritoCompra item:(List<CarritoCompra>)sesion.getAttribute("carrito")) carrito+=item.getCantidad(); int deseos=usuarioId==null?0:new TiendaDAO().contarDeseos(usuarioId); String csrf=SeguridadAplicacion.csrf(request.getSession()); String appCtx=request.getContextPath(); ConfiguracionSitio identidad=new ConfiguracionDAO().obtener(); String nombreTienda=identidad.getNombreTienda()!=null?identidad.getNombreTienda().toUpperCase():"SOEM OFICIAL"; int espacio=nombreTienda.indexOf(' '); String marcaPrincipal=espacio<0?nombreTienda:nombreTienda.substring(0,espacio); String marcaResto=espacio<0?"":nombreTienda.substring(espacio+1);
+Set<String> misPermisos=usuarioRol==null?Collections.emptySet():new PermisosDAO().permisosDeRol(usuarioRol);
+boolean puedeCompras=misPermisos.contains("Procesar compras");
+boolean puedeCategorias=misPermisos.contains("Gestionar categorías");
+boolean puedeProductos=misPermisos.contains("Gestionar productos");
+boolean puedeIdentidad=misPermisos.contains("Gestionar configuración");
+boolean puedeUsuarios=misPermisos.contains("Gestionar usuarios");
 %>
 <style>:root{--gold:<%=identidad.getColorAcento()%>;--ink:<%=identidad.getColorPrimario()%>;}</style>
 <header class="site-header sticky-top">
@@ -22,14 +28,16 @@ HttpSession sesion=request.getSession(false); Integer usuarioId=sesion==null?nul
             </li>
             <li class="nav-item">
                 <a class="nav-link" href="<%=appCtx%>/home#productos">Novedades</a>
-            </li><%if(usuarioRol!=null&&usuarioRol==1){%><li class="nav-item">
+            </li><%if(puedeCompras){%><li class="nav-item">
             <a class="nav-link" href="<%=appCtx%>/admin">Administración</a>
-        </li><li class="nav-item">
+        </li><%}if(puedeCategorias){%><li class="nav-item">
             <a class="nav-link" href="<%=appCtx%>/admin/categorias">Categorías</a>
-        </li><li class="nav-item">
+        </li><%}if(puedeProductos){%><li class="nav-item">
             <a class="nav-link" href="<%=appCtx%>/admin/productos">Productos</a>
-        </li><li class="nav-item">
+        </li><%}if(puedeIdentidad){%><li class="nav-item">
             <a class="nav-link" href="<%=appCtx%>/admin/identidad">Identidad</a>
+        </li><%}if(puedeUsuarios){%><li class="nav-item">
+            <a class="nav-link" href="<%=appCtx%>/admin/usuarios">Usuarios</a>
         </li><%}%></ul>
         <div class="d-flex align-items-center gap-2">
             <a class="header-action" href="<%=appCtx%>/wishlist" aria-label="Lista de deseos">♥<span><%=deseos%></span>

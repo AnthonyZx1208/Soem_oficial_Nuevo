@@ -20,8 +20,11 @@ public class PruebaInsertarPermiso {
         PermisosDAO dao = new PermisosDAO();
 
         System.out.println("=== INSERTAR PERMISO ===");
+        System.out.println("Por favor Ingrese el nombre del Permiso (ej: Gestionar productos):");
+        miPermiso.setNombrePermiso(sc.nextLine());
+
         System.out.println("Por favor Ingrese la Descripcion del Permiso:");
-        miPermiso.setDescripPermisos(sc.nextLine());
+        miPermiso.setDescripcion(sc.nextLine());
 
         boolean resultado = dao.insertarPermiso(miPermiso);
         if (resultado) {

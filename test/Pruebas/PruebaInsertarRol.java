@@ -24,7 +24,7 @@ public class PruebaInsertarRol {
         miRol.setNombreRol(sc.nextLine());
 
         System.out.println("Por favor Ingrese la Descripcion del Rol:");
-        miRol.setDescripRol(sc.nextLine());
+        miRol.setDescripcion(sc.nextLine());
 
         boolean resultado = dao.insertarRol(miRol);
         if (resultado) {

@@ -26,7 +26,7 @@ public class PruebaConsultarRol {
         if (miRol != null) {
             System.out.println("ID: " + miRol.getIdRol());
             System.out.println("Nombre: " + miRol.getNombreRol());
-            System.out.println("Descripcion: " + miRol.getDescripRol());
+            System.out.println("Descripcion: " + miRol.getDescripcion());
         } else {
             System.out.println("Rol no encontrado");
         }

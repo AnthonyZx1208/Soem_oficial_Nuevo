@@ -18,7 +18,7 @@ public class AdminIdentidadServlet extends HttpServlet {
     private static final String CARPETA = "/assets/identidad/";
 
     private boolean admin(HttpServletRequest r) {
-        return Integer.valueOf(1).equals(r.getSession().getAttribute("usuarioRol"));
+        return SeguridadAplicacion.tienePermiso(r, "Gestionar configuración");
     }
 
     protected void doGet(HttpServletRequest req, HttpServletResponse res) throws ServletException, IOException {

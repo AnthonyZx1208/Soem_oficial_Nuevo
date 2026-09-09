@@ -24,8 +24,9 @@ public class PruebaConsultarPermiso {
 
         Permisos miPermiso = miPermisosDAO.consultarPermiso(idPermiso);
         if (miPermiso != null) {
-            System.out.println("ID: " + miPermiso.getIdPermisos());
-            System.out.println("Descripcion: " + miPermiso.getDescripPermisos());
+            System.out.println("ID: " + miPermiso.getIdPermiso());
+            System.out.println("Nombre: " + miPermiso.getNombrePermiso());
+            System.out.println("Descripcion: " + miPermiso.getDescripcion());
         } else {
             System.out.println("Permiso no encontrado");
         }

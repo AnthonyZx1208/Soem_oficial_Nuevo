@@ -8,6 +8,7 @@ import javax.crypto.SecretKeyFactory;
 import javax.crypto.spec.PBEKeySpec;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpSession;
+import Controlador.PermisosDAO;
 
 public final class SeguridadAplicacion {
     private static final SecureRandom RANDOM = new SecureRandom();
@@ -48,6 +49,18 @@ public final class SeguridadAplicacion {
             session.setAttribute("csrfToken", token);
         }
         return token;
+    }
+
+    /**
+     * true si la sesión tiene un rol y ese rol tiene el permiso indicado
+     * (Roles_Has_Permisos, vía PermisosDAO.rolTienePermiso). Reemplaza el
+     * viejo chequeo fijo "usuarioRol==1" en los Servlets de admin, para que
+     * el rol Vendedor (con permisos parciales) también funcione.
+     */
+    public static boolean tienePermiso(HttpServletRequest request, String nombrePermiso) {
+        HttpSession session = request.getSession(false);
+        Integer rol = session == null ? null : (Integer) session.getAttribute("usuarioRol");
+        return rol != null && new PermisosDAO().rolTienePermiso(rol, nombrePermiso);
     }
 
     public static boolean csrfValido(HttpServletRequest request) {

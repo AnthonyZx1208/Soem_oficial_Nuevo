@@ -26,14 +26,14 @@ public class Roles {
         this.nombreRol = nombreRol;
     }
 
-    public String getDescripRol() {
-        return descripRol;
+    public String getDescripcion() {
+        return descripcion;
     }
 
-    public void setDescripRol(String descripRol) {
-        this.descripRol = descripRol;
+    public void setDescripcion(String descripcion) {
+        this.descripcion = descripcion;
     }
     private int idRol;
     private String nombreRol;
-    private String descripRol;
+    private String descripcion;
 }

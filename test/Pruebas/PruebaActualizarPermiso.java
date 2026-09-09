@@ -23,10 +23,13 @@ public class PruebaActualizarPermiso {
         System.out.println("Por favor ingrese el ID del permiso a actualizar:");
         int idActualizar = sc.nextInt();
         sc.nextLine();
-        miPermiso.setIdPermisos(idActualizar);
+        miPermiso.setIdPermiso(idActualizar);
+
+        System.out.println("Por favor ingrese el nuevo nombre:");
+        miPermiso.setNombrePermiso(sc.nextLine());
 
         System.out.println("Por favor ingrese la nueva Descripcion:");
-        miPermiso.setDescripPermisos(sc.nextLine());
+        miPermiso.setDescripcion(sc.nextLine());
 
         boolean respuesta = dao.actualizarPermiso(miPermiso);
         if (respuesta) {

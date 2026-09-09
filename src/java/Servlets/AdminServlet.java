@@ -13,7 +13,7 @@ import jakarta.servlet.http.*;
 @WebServlet("/admin")
 public class AdminServlet extends HttpServlet {
     private boolean admin(HttpServletRequest r) {
-        return Integer.valueOf(1).equals(r.getSession().getAttribute("usuarioRol"));
+        return SeguridadAplicacion.tienePermiso(r, "Procesar compras");
     }
     protected void doGet(HttpServletRequest req,HttpServletResponse res)throws ServletException,IOException {
         if(!admin(req)) {

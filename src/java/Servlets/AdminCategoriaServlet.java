@@ -10,7 +10,7 @@ import jakarta.servlet.http.*;
 @WebServlet("/admin/categorias")
 public class AdminCategoriaServlet extends HttpServlet {
     private boolean admin(HttpServletRequest r) {
-        return Integer.valueOf(1).equals(r.getSession().getAttribute("usuarioRol"));
+        return SeguridadAplicacion.tienePermiso(r, "Gestionar categorías");
     }
     protected void doGet(HttpServletRequest req,HttpServletResponse res)throws ServletException,IOException {
         if(!admin(req)) {

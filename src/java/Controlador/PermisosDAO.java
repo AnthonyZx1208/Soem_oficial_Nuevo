@@ -1,7 +1,3 @@
-/*
- * Click nbfs://nbhost/SystemFileSystem/Templates/Licenses/license-default.txt to change this license
- * Click nbfs://nbhost/SystemFileSystem/Templates/Classes/Class.java to edit this template
- */
 package Controlador;
 
 import Modelo.Permisos;
@@ -10,140 +6,130 @@ import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 
-/**
- *
- * @author Aprendiz
- */
 public class PermisosDAO {
 
     private Conexion conect = new Conexion();
 
-    /* ===================== INSERTAR PERMISO ===================== */
     public boolean insertarPermiso(Permisos miPermiso) {
-        boolean resultado = false;
-        Connection conn = conect.getConn();
-        try {
-            String querySql = "INSERT INTO Permisos (Descrip_permisos) VALUES (?)";
-            PreparedStatement ps = conn.prepareStatement(querySql);
-            ps.setString(1, miPermiso.getDescripPermisos());
-
-            int filas = ps.executeUpdate();
-            if (filas > 0) {
-                resultado = true;
+        try (Connection conn = conect.getConn()) {
+            if (conn == null) return false;
+            try (PreparedStatement ps = conn.prepareStatement("INSERT INTO Permisos (nombre_permiso, descripcion) VALUES (?, ?)")) {
+                ps.setString(1, miPermiso.getNombrePermiso());
+                ps.setString(2, miPermiso.getDescripcion());
+                return ps.executeUpdate() > 0;
             }
-            ps.close();
         } catch (SQLException e) {
             System.out.println("Error al insertar permiso: " + e.getMessage());
+            return false;
         }
-        return resultado;
     }
 
-    /* ===================== CONSULTAR PERMISO ===================== */
     public Permisos consultarPermiso(int idPermiso) {
-        Permisos miPermiso = null;
-        Connection conn = conect.getConn();
-        try {
-            String querySql = "SELECT id_Permisos, Descrip_permisos FROM Permisos WHERE id_Permisos = ?";
-            PreparedStatement ps = conn.prepareStatement(querySql);
-            ps.setInt(1, idPermiso);
-            ResultSet rs = ps.executeQuery();
-            if (rs.next()) {
-                miPermiso = new Permisos();
-                miPermiso.setIdPermisos(rs.getInt("id_Permisos"));
-                miPermiso.setDescripPermisos(rs.getString("Descrip_permisos"));
+        try (Connection conn = conect.getConn()) {
+            if (conn == null) return null;
+            try (PreparedStatement ps = conn.prepareStatement("SELECT id_permiso, nombre_permiso, descripcion FROM Permisos WHERE id_permiso = ?")) {
+                ps.setInt(1, idPermiso);
+                try (ResultSet rs = ps.executeQuery()) {
+                    return rs.next() ? mapear(rs) : null;
+                }
             }
-            rs.close();
-            ps.close();
         } catch (SQLException e) {
             System.out.println("Error al consultar permiso: " + e.getMessage());
+            return null;
         }
-        return miPermiso;
     }
 
-    /* ===================== ACTUALIZAR PERMISO ===================== */
     public boolean actualizarPermiso(Permisos miPermiso) {
-        boolean resultado = false;
-        Connection conn = conect.getConn();
-        try {
-            String querySql = "UPDATE Permisos SET Descrip_permisos = ? WHERE id_Permisos = ?";
-            PreparedStatement ps = conn.prepareStatement(querySql);
-            ps.setString(1, miPermiso.getDescripPermisos());
-            ps.setInt(2, miPermiso.getIdPermisos());
-
-            int filas = ps.executeUpdate();
-            if (filas > 0) {
-                resultado = true;
+        try (Connection conn = conect.getConn()) {
+            if (conn == null) return false;
+            try (PreparedStatement ps = conn.prepareStatement("UPDATE Permisos SET nombre_permiso = ?, descripcion = ? WHERE id_permiso = ?")) {
+                ps.setString(1, miPermiso.getNombrePermiso());
+                ps.setString(2, miPermiso.getDescripcion());
+                ps.setInt(3, miPermiso.getIdPermiso());
+                return ps.executeUpdate() > 0;
             }
-            ps.close();
         } catch (SQLException e) {
             System.out.println("Error al actualizar permiso: " + e.getMessage());
+            return false;
         }
-        return resultado;
     }
 
-    /* ===================== MODIFICAR PERMISO ===================== */
-    public boolean modificarPermiso(Permisos miPermiso) {
-        boolean resultado = false;
-        Connection conn = conect.getConn();
-        try {
-            String querySql = "UPDATE Permisos SET Descrip_permisos = ? WHERE id_Permisos = ?";
-            PreparedStatement ps = conn.prepareStatement(querySql);
-            ps.setString(1, miPermiso.getDescripPermisos());
-            ps.setInt(2, miPermiso.getIdPermisos());
-
-            int filas = ps.executeUpdate();
-            if (filas > 0) {
-                resultado = true;
-            }
-            ps.close();
-        } catch (SQLException e) {
-            System.out.println("Error al modificar permiso: " + e.getMessage());
-        }
-        return resultado;
-    }
-
-    /* ===================== ELIMINAR PERMISO ===================== */
     public boolean eliminarPermiso(int idPermiso) {
-        boolean resultado = false;
-        Connection conn = conect.getConn();
-        try {
-            String querySql = "DELETE FROM Permisos WHERE id_Permisos = ?";
-            PreparedStatement ps = conn.prepareStatement(querySql);
-            ps.setInt(1, idPermiso);
-
-            int filas = ps.executeUpdate();
-            if (filas > 0) {
-                resultado = true;
+        try (Connection conn = conect.getConn()) {
+            if (conn == null) return false;
+            try (PreparedStatement ps = conn.prepareStatement("DELETE FROM Permisos WHERE id_permiso = ?")) {
+                ps.setInt(1, idPermiso);
+                return ps.executeUpdate() > 0;
             }
-            ps.close();
         } catch (SQLException e) {
             System.out.println("Error al eliminar permiso: " + e.getMessage()
-                    + "\nNota: Si el permiso esta asociado a roles, primero elimina la relacion.");
+                    + "\nNota: si el permiso está asociado a roles, primero elimina la relación.");
+            return false;
         }
-        return resultado;
     }
 
-    /* ===================== LISTAR TODOS LOS PERMISOS ===================== */
     public List<Permisos> listarPermisos() {
-        List<Permisos> listaPermisos = new ArrayList<>();
-        Connection conn = conect.getConn();
-        try {
-            String querySql = "SELECT id_Permisos, Descrip_permisos FROM Permisos";
-            PreparedStatement ps = conn.prepareStatement(querySql);
-            ResultSet rs = ps.executeQuery();
-            while (rs.next()) {
-                Permisos miPermiso = new Permisos();
-                miPermiso.setIdPermisos(rs.getInt("id_Permisos"));
-                miPermiso.setDescripPermisos(rs.getString("Descrip_permisos"));
-                listaPermisos.add(miPermiso);
+        List<Permisos> lista = new ArrayList<>();
+        try (Connection conn = conect.getConn()) {
+            if (conn == null) return lista;
+            try (PreparedStatement ps = conn.prepareStatement("SELECT id_permiso, nombre_permiso, descripcion FROM Permisos ORDER BY id_permiso");
+                 ResultSet rs = ps.executeQuery()) {
+                while (rs.next()) lista.add(mapear(rs));
             }
-            rs.close();
-            ps.close();
         } catch (SQLException e) {
             System.out.println("Error al listar permisos: " + e.getMessage());
         }
-        return listaPermisos;
+        return lista;
+    }
+
+    /** true si el rol dado tiene el permiso indicado (por nombre_permiso), vía Roles_Has_Permisos. */
+    public boolean rolTienePermiso(int rolId, String nombrePermiso) {
+        String sql = "SELECT 1 FROM Roles_Has_Permisos rp "
+                + "JOIN Permisos p ON p.id_permiso = rp.Permisos_id_permiso "
+                + "WHERE rp.Roles_id_rol = ? AND p.nombre_permiso = ?";
+        try (Connection conn = conect.getConn()) {
+            if (conn == null) return false;
+            try (PreparedStatement ps = conn.prepareStatement(sql)) {
+                ps.setInt(1, rolId);
+                ps.setString(2, nombrePermiso);
+                try (ResultSet rs = ps.executeQuery()) {
+                    return rs.next();
+                }
+            }
+        } catch (SQLException e) {
+            System.out.println("Error al verificar permiso: " + e.getMessage());
+            return false;
+        }
+    }
+
+    /** Todos los nombre_permiso de un rol en una sola consulta (para no repetir rolTienePermiso por cada chequeo). */
+    public Set<String> permisosDeRol(int rolId) {
+        Set<String> nombres = new HashSet<>();
+        String sql = "SELECT p.nombre_permiso FROM Roles_Has_Permisos rp "
+                + "JOIN Permisos p ON p.id_permiso = rp.Permisos_id_permiso WHERE rp.Roles_id_rol = ?";
+        try (Connection conn = conect.getConn()) {
+            if (conn == null) return nombres;
+            try (PreparedStatement ps = conn.prepareStatement(sql)) {
+                ps.setInt(1, rolId);
+                try (ResultSet rs = ps.executeQuery()) {
+                    while (rs.next()) nombres.add(rs.getString(1));
+                }
+            }
+        } catch (SQLException e) {
+            System.out.println("Error al listar permisos del rol: " + e.getMessage());
+        }
+        return nombres;
+    }
+
+    private Permisos mapear(ResultSet rs) throws SQLException {
+        Permisos miPermiso = new Permisos();
+        miPermiso.setIdPermiso(rs.getInt("id_permiso"));
+        miPermiso.setNombrePermiso(rs.getString("nombre_permiso"));
+        miPermiso.setDescripcion(rs.getString("descripcion"));
+        return miPermiso;
     }
 }

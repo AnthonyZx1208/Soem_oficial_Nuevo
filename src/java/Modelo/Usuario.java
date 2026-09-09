@@ -121,7 +121,15 @@ public class Usuario {
     public void setTipoDocumentoIdTipoDocumento(int tipoDocumentoIdTipoDocumento) {
         this.tipoDocumentoIdTipoDocumento = tipoDocumentoIdTipoDocumento;
     }
-    
+
+    public Date getFechaRegistro() {
+        return fechaRegistro;
+    }
+
+    public void setFechaRegistro(Date fechaRegistro) {
+        this.fechaRegistro = fechaRegistro;
+    }
+
     private int idUsuario;
     private String nombreUsuario;
     private String apellidoUsuario;
@@ -136,5 +144,6 @@ public class Usuario {
     private int rolesIdRol;
     private int productoIdProducto;
     private int tipoDocumentoIdTipoDocumento;
+    private Date fechaRegistro;
 
 }
