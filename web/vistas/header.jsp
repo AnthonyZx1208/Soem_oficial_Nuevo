@@ -1,11 +1,12 @@
 <%@ page contentType="text/html" pageEncoding="UTF-8" %>
-<%@ page import="java.util.List,Modelo.CarritoCompra,Controlador.TiendaDAO,Seguridad.SeguridadAplicacion,Seguridad.Util" %>
+<%@ page import="java.util.List,Modelo.CarritoCompra,Modelo.ConfiguracionSitio,Controlador.TiendaDAO,Controlador.ConfiguracionDAO,Seguridad.SeguridadAplicacion,Seguridad.Util" %>
 <%
-HttpSession sesion=request.getSession(false); Integer usuarioId=sesion==null?null:(Integer)sesion.getAttribute("usuarioId"); Integer usuarioRol=sesion==null?null:(Integer)sesion.getAttribute("usuarioRol"); String usuarioNombre=sesion==null?null:(String)sesion.getAttribute("usuarioNombre"); int carrito=0; if(sesion!=null&&sesion.getAttribute("carrito") instanceof List) for(CarritoCompra item:(List<CarritoCompra>)sesion.getAttribute("carrito")) carrito+=item.getCantidad(); int deseos=usuarioId==null?0:new TiendaDAO().contarDeseos(usuarioId); String csrf=SeguridadAplicacion.csrf(request.getSession()); String appCtx=request.getContextPath();
+HttpSession sesion=request.getSession(false); Integer usuarioId=sesion==null?null:(Integer)sesion.getAttribute("usuarioId"); Integer usuarioRol=sesion==null?null:(Integer)sesion.getAttribute("usuarioRol"); String usuarioNombre=sesion==null?null:(String)sesion.getAttribute("usuarioNombre"); int carrito=0; if(sesion!=null&&sesion.getAttribute("carrito") instanceof List) for(CarritoCompra item:(List<CarritoCompra>)sesion.getAttribute("carrito")) carrito+=item.getCantidad(); int deseos=usuarioId==null?0:new TiendaDAO().contarDeseos(usuarioId); String csrf=SeguridadAplicacion.csrf(request.getSession()); String appCtx=request.getContextPath(); ConfiguracionSitio identidad=new ConfiguracionDAO().obtener(); String nombreTienda=identidad.getNombreTienda()!=null?identidad.getNombreTienda().toUpperCase():"SOEM OFICIAL"; int espacio=nombreTienda.indexOf(' '); String marcaPrincipal=espacio<0?nombreTienda:nombreTienda.substring(0,espacio); String marcaResto=espacio<0?"":nombreTienda.substring(espacio+1);
 %>
+<style>:root{--gold:<%=identidad.getColorAcento()%>;--ink:<%=identidad.getColorPrimario()%>;}</style>
 <header class="site-header sticky-top">
     <nav class="navbar navbar-expand-lg navbar-dark container py-3">
-        <a class="navbar-brand brand" href="<%=appCtx%>/home">SOEM <span>OFICIAL</span>
+        <a class="navbar-brand brand" href="<%=appCtx%>/home"><%if(identidad.getLogoUrl()!=null){%><img src="<%=appCtx%>/<%=identidad.getLogoUrl()%>" alt="<%=Util.escapeHtml(identidad.getNombreTienda())%>" style="height:32px"><%}else{%><%=Util.escapeHtml(marcaPrincipal)%> <span><%=Util.escapeHtml(marcaResto)%></span><%}%>
     </a>
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#menu">
         <span class="navbar-toggler-icon">
