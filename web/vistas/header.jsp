@@ -23,6 +23,12 @@ HttpSession sesion=request.getSession(false); Integer usuarioId=sesion==null?nul
                 <a class="nav-link" href="<%=appCtx%>/home#productos">Novedades</a>
             </li><%if(usuarioRol!=null&&usuarioRol==1){%><li class="nav-item">
             <a class="nav-link" href="<%=appCtx%>/admin">Administración</a>
+        </li><li class="nav-item">
+            <a class="nav-link" href="<%=appCtx%>/admin/categorias">Categorías</a>
+        </li><li class="nav-item">
+            <a class="nav-link" href="<%=appCtx%>/admin/productos">Productos</a>
+        </li><li class="nav-item">
+            <a class="nav-link" href="<%=appCtx%>/admin/identidad">Identidad</a>
         </li><%}%></ul>
         <div class="d-flex align-items-center gap-2">
             <a class="header-action" href="<%=appCtx%>/wishlist" aria-label="Lista de deseos">♥<span><%=deseos%></span>
