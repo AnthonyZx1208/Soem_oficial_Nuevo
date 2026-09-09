@@ -78,6 +78,21 @@ public class ProductoDAO {
 
     /* ===================== CONSULTAR PRODUCTO ===================== */
     public Producto consultarProducto(int idProducto) {
+        return consultarProducto(idProducto, true);
+    }
+
+    /**
+     * Igual que consultarProducto(id), pero sin anular precio_oferta cuando
+     * la oferta está fuera de su ventana de vigencia. La usa el formulario
+     * de edición del admin (AdminProductoServlet), que necesita ver y
+     * conservar el valor guardado aunque la oferta todavía no empiece o ya
+     * haya terminado.
+     */
+    public Producto consultarProductoCrudo(int idProducto) {
+        return consultarProducto(idProducto, false);
+    }
+
+    private Producto consultarProducto(int idProducto, boolean aplicarVigencia) {
         Producto miProducto = null;
         Connection conn = conect.getConn();
         try {
@@ -86,7 +101,7 @@ public class ProductoDAO {
             ps.setInt(1, idProducto);
             ResultSet rs = ps.executeQuery();
             if (rs.next()) {
-                miProducto = mapearProducto(rs);
+                miProducto = mapearProducto(rs, aplicarVigencia);
             }
             rs.close();
             ps.close();
@@ -233,6 +248,10 @@ public class ProductoDAO {
 
     /* ===================== HELPER: MAPEAR RESULTSET -> PRODUCTO ===================== */
     private Producto mapearProducto(ResultSet rs) throws SQLException {
+        return mapearProducto(rs, true);
+    }
+
+    private Producto mapearProducto(ResultSet rs, boolean aplicarVigencia) throws SQLException {
         Producto miProducto = new Producto();
         miProducto.setId_producto(rs.getInt("id_producto"));
         miProducto.setNombre_producto(rs.getString("nombre_producto"));
@@ -250,7 +269,7 @@ public class ProductoDAO {
         miProducto.setEstado(rs.getString("estado"));
         miProducto.setFecha_inicio_oferta(rs.getTimestamp("fecha_inicio_oferta"));
         miProducto.setFecha_fin_oferta(rs.getTimestamp("fecha_fin_oferta"));
-        if (miProducto.getPrecio_oferta() != null
+        if (aplicarVigencia && miProducto.getPrecio_oferta() != null
                 && !ofertaVigente(miProducto.getFecha_inicio_oferta(), miProducto.getFecha_fin_oferta())) {
             miProducto.setPrecio_oferta(null);
         }

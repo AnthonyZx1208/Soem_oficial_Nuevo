@@ -37,18 +37,8 @@
         <param-value></param-value>
     </context-param>
     
-    <!-- MAPEO DE SERVLETS - Ya están mapeados con @WebServlet en código fuente -->
-    <!-- Los siguientes servlets están automáticamente mapeados: -->
-    <!-- 
-    - /login → LoginServlet
-    - /register → RegisterServlet  
-    - /home, /index → HomeServlet
-    - /producto → ProductoServlet
-    - /cart → CartServlet
-    - /logout → LogoutServlet
-    - /categoria → CategoriaServlet
-    -->
-    
+    <!-- Las rutas de los Servlets se definen únicamente con @WebServlet en su código fuente. -->
+
     <!-- CONFIGURACIÓN DE ERRORES -->
     <error-page>
         <error-code>404</error-code>

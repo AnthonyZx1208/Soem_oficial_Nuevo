@@ -66,7 +66,7 @@ public class AdminProductoServlet extends HttpServlet {
         if (editarId != null) {
             try {
                 int id = Integer.parseInt(editarId);
-                Producto editando = productoDAO.consultarProducto(id);
+                Producto editando = productoDAO.consultarProductoCrudo(id);
                 req.setAttribute("editando", editando);
                 if (editando != null) {
                     req.setAttribute("variantes", new ProductosHasColoresDAO().listarPorProducto(id));
