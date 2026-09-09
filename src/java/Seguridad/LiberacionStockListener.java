@@ -36,14 +36,24 @@ public class LiberacionStockListener implements ServletContextListener {
         if (executor != null) executor.shutdownNow();
     }
 
+    /**
+     * Cualquier excepción no controlada aquí cancelaría silenciosamente
+     * todas las ejecuciones futuras de scheduleAtFixedRate, así que se
+     * captura Throwable a nivel de tarea completa, además del try/catch
+     * por orden individual.
+     */
     private void liberarVencidas() {
-        TiendaDAO dao = new TiendaDAO();
-        for (int ordenId : dao.ordenesConReservaVencida()) {
-            try {
-                dao.actualizarEstado(ordenId, "Rechazado", MOTIVO);
-            } catch (Exception ex) {
-                System.err.println("No fue posible liberar automáticamente la orden " + ordenId + ": " + ex.getMessage());
+        try {
+            TiendaDAO dao = new TiendaDAO();
+            for (int ordenId : dao.ordenesConReservaVencida()) {
+                try {
+                    dao.actualizarEstado(ordenId, "Rechazado", MOTIVO);
+                } catch (Exception ex) {
+                    System.err.println("No fue posible liberar automáticamente la orden " + ordenId + ": " + ex.getMessage());
+                }
             }
+        } catch (Throwable ex) {
+            System.err.println("Fallo inesperado en la liberación automática de stock: " + ex.getMessage());
         }
     }
 }

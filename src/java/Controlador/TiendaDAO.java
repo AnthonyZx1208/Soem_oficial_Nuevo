@@ -192,9 +192,9 @@ public class TiendaDAO {
         List<Integer> ordenes = new ArrayList<>();
         String sql = "SELECT DISTINCT Cabeza_Factura_id_cabeza_factura FROM Reserva_Stock "
                 + "WHERE estado='Reservado' AND fecha_expiracion < NOW()";
-        try (Connection c = conexion.getConn(); PreparedStatement ps = c.prepareStatement(sql)) {
+        try (Connection c = conexion.getConn()) {
             if (c == null) return ordenes;
-            try (ResultSet rs = ps.executeQuery()) {
+            try (PreparedStatement ps = c.prepareStatement(sql); ResultSet rs = ps.executeQuery()) {
                 while (rs.next()) ordenes.add(rs.getInt(1));
             }
         } catch (SQLException ex) {

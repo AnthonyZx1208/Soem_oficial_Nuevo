@@ -42,6 +42,18 @@ public class AdminProductoServlet extends HttpServlet {
             res.sendError(403);
             return;
         }
+        Integer idEditar = null;
+        String editarId = req.getParameter("editar");
+        if (editarId != null) {
+            try {
+                idEditar = Integer.parseInt(editarId);
+            } catch (NumberFormatException ignorado) { }
+        }
+        mostrarFormulario(req, res, idEditar);
+    }
+
+    /** Recarga la lista y, si corresponde, el producto en edición con sus variantes. Común a doGet y a las acciones de doPost, así los mensajes de éxito/error (atributos del request) sobreviven al forward. */
+    private void mostrarFormulario(HttpServletRequest req, HttpServletResponse res, Integer idEditar) throws ServletException, IOException {
         ProductoDAO productoDAO = new ProductoDAO();
         List<Producto> productos = productoDAO.listarProductos();
         String filtroCategoria = req.getParameter("categoria");
@@ -62,16 +74,12 @@ public class AdminProductoServlet extends HttpServlet {
         req.setAttribute("colores", new ColoresDAO().listarColores());
         req.setAttribute("filtroCategoria", filtroCategoria);
         req.setAttribute("filtroEstado", filtroEstado);
-        String editarId = req.getParameter("editar");
-        if (editarId != null) {
-            try {
-                int id = Integer.parseInt(editarId);
-                Producto editando = productoDAO.consultarProductoCrudo(id);
-                req.setAttribute("editando", editando);
-                if (editando != null) {
-                    req.setAttribute("variantes", new ProductosHasColoresDAO().listarPorProducto(id));
-                }
-            } catch (NumberFormatException ignorado) { }
+        if (idEditar != null) {
+            Producto editando = productoDAO.consultarProductoCrudo(idEditar);
+            req.setAttribute("editando", editando);
+            if (editando != null) {
+                req.setAttribute("variantes", new ProductosHasColoresDAO().listarPorProducto(idEditar));
+            }
         }
         req.getRequestDispatcher("/vistas/admin_productos.jsp").forward(req, res);
     }
@@ -140,12 +148,7 @@ public class AdminProductoServlet extends HttpServlet {
         } catch (IllegalArgumentException ex) {
             req.setAttribute("error", ex.getMessage() != null ? ex.getMessage() : "Datos inválidos.");
         }
-        Integer volverEditar = (Integer) req.getAttribute("volverEditar");
-        if (volverEditar != null) {
-            res.sendRedirect(req.getContextPath() + "/admin/productos?editar=" + volverEditar);
-            return;
-        }
-        doGet(req, res);
+        mostrarFormulario(req, res, (Integer) req.getAttribute("volverEditar"));
     }
 
     private Producto leerFormulario(HttpServletRequest req, Producto p) {
@@ -198,10 +201,10 @@ public class AdminProductoServlet extends HttpServlet {
 
     private List<Map<String, Object>> listarSubCategorias() {
         List<Map<String, Object>> lista = new ArrayList<>();
-        try (Connection c = new Conexion().getConn();
-             PreparedStatement ps = c.prepareStatement("SELECT id_subcategoria, nombre_subcategoria, Categoria_id_categoria FROM SubCategoria ORDER BY Categoria_id_categoria, nombre_subcategoria")) {
+        try (Connection c = new Conexion().getConn()) {
             if (c == null) return lista;
-            try (ResultSet rs = ps.executeQuery()) {
+            try (PreparedStatement ps = c.prepareStatement("SELECT id_subcategoria, nombre_subcategoria, Categoria_id_categoria FROM SubCategoria ORDER BY Categoria_id_categoria, nombre_subcategoria");
+                 ResultSet rs = ps.executeQuery()) {
                 while (rs.next()) {
                     Map<String, Object> fila = new LinkedHashMap<>();
                     fila.put("id", rs.getInt(1));
