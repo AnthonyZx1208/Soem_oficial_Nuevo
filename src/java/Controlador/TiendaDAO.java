@@ -167,7 +167,7 @@ public class TiendaDAO {
         }
     }
     private Producto productoBloqueado(Connection c,int id)throws SQLException {
-        try(PreparedStatement ps=c.prepareStatement("SELECT id_producto,nombre_producto,precio_producto,precio_oferta,cantidad_stock FROM Producto WHERE id_producto=? FOR UPDATE")) {
+        try(PreparedStatement ps=c.prepareStatement("SELECT id_producto,nombre_producto,precio_producto,precio_oferta,cantidad_stock,fecha_inicio_oferta,fecha_fin_oferta FROM Producto WHERE id_producto=? FOR UPDATE")) {
             ps.setInt(1,id);
             try(ResultSet r=ps.executeQuery()) {
                 if(!r.next())return null;
@@ -176,7 +176,12 @@ public class TiendaDAO {
                 p.setNombre_producto(r.getString(2));
                 p.setPrecio_producto(r.getFloat(3));
                 double oferta=r.getDouble(4);
-                p.setPrecio_oferta(r.wasNull()?null:oferta);
+                boolean hayOferta=!r.wasNull();
+                java.sql.Timestamp inicio=r.getTimestamp(6);
+                java.sql.Timestamp fin=r.getTimestamp(7);
+                // Misma regla de vigencia que ProductoDAO: el precio que se cobra
+                // en checkout debe coincidir con el que se mostró en el catálogo.
+                p.setPrecio_oferta(hayOferta&&ProductoDAO.ofertaVigente(inicio,fin)?oferta:null);
                 p.setCantidad_stock(r.getInt(5));
                 return p;
             }

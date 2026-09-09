@@ -1,7 +1,3 @@
-/*
- * Click nbfs://nbhost/SystemFileSystem/Templates/Licenses/license-default.txt to change this license
- * Click nbfs://nbhost/SystemFileSystem/Templates/Classes/Class.java to edit this template
- */
 package Controlador;
 
 import Modelo.Colores;
@@ -12,138 +8,91 @@ import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
 
-/**
- *
- * @author Aprendiz
- */
 public class ColoresDAO {
 
     private Conexion conect = new Conexion();
 
-    /* ===================== INSERTAR COLOR ===================== */
     public boolean insertarColor(Colores miColor) {
         boolean resultado = false;
-        Connection conn = conect.getConn();
-        try {
-            String querySql = "INSERT INTO Colores (codigoRGB) VALUES (?)";
-            PreparedStatement ps = conn.prepareStatement(querySql);
-            ps.setString(1, miColor.getCodigoRGB());
-
-            int filas = ps.executeUpdate();
-            if (filas > 0) {
-                resultado = true;
+        try (Connection conn = conect.getConn()) {
+            if (conn == null) return false;
+            try (PreparedStatement ps = conn.prepareStatement("INSERT INTO Colores (nombre_color, codigo_hexadecimal) VALUES (?, ?)")) {
+                ps.setString(1, miColor.getNombreColor());
+                ps.setString(2, miColor.getCodigoHexadecimal());
+                resultado = ps.executeUpdate() > 0;
             }
-            ps.close();
         } catch (SQLException e) {
             System.out.println("Error al insertar color: " + e.getMessage());
         }
         return resultado;
     }
 
-    /* ===================== CONSULTAR COLOR ===================== */
     public Colores consultarColor(int idColor) {
         Colores miColor = null;
-        Connection conn = conect.getConn();
-        try {
-            String querySql = "SELECT id_nombre_color, codigoRGB FROM Colores WHERE id_nombre_color = ?";
-            PreparedStatement ps = conn.prepareStatement(querySql);
-            ps.setInt(1, idColor);
-            ResultSet rs = ps.executeQuery();
-            if (rs.next()) {
-                miColor = new Colores();
-                miColor.setIdNombreColor(rs.getInt("id_nombre_color"));
-                miColor.setCodigoRGB(rs.getString("codigoRGB"));
+        try (Connection conn = conect.getConn()) {
+            if (conn == null) return null;
+            try (PreparedStatement ps = conn.prepareStatement("SELECT id_color, nombre_color, codigo_hexadecimal FROM Colores WHERE id_color = ?")) {
+                ps.setInt(1, idColor);
+                try (ResultSet rs = ps.executeQuery()) {
+                    if (rs.next()) miColor = mapear(rs);
+                }
             }
-            rs.close();
-            ps.close();
         } catch (SQLException e) {
             System.out.println("Error al consultar color: " + e.getMessage());
         }
         return miColor;
     }
 
-    /* ===================== ACTUALIZAR COLOR ===================== */
     public boolean actualizarColor(Colores miColor) {
         boolean resultado = false;
-        Connection conn = conect.getConn();
-        try {
-            String querySql = "UPDATE Colores SET codigoRGB = ? WHERE id_nombre_color = ?";
-            PreparedStatement ps = conn.prepareStatement(querySql);
-            ps.setString(1, miColor.getCodigoRGB());
-            ps.setInt(2, miColor.getIdNombreColor());
-
-            int filas = ps.executeUpdate();
-            if (filas > 0) {
-                resultado = true;
+        try (Connection conn = conect.getConn()) {
+            if (conn == null) return false;
+            try (PreparedStatement ps = conn.prepareStatement("UPDATE Colores SET nombre_color = ?, codigo_hexadecimal = ? WHERE id_color = ?")) {
+                ps.setString(1, miColor.getNombreColor());
+                ps.setString(2, miColor.getCodigoHexadecimal());
+                ps.setInt(3, miColor.getIdColor());
+                resultado = ps.executeUpdate() > 0;
             }
-            ps.close();
         } catch (SQLException e) {
             System.out.println("Error al actualizar color: " + e.getMessage());
         }
         return resultado;
     }
 
-    /* ===================== MODIFICAR COLOR ===================== */
-    public boolean modificarColor(Colores miColor) {
-        boolean resultado = false;
-        Connection conn = conect.getConn();
-        try {
-            String querySql = "UPDATE Colores SET codigoRGB = ? WHERE id_nombre_color = ?";
-            PreparedStatement ps = conn.prepareStatement(querySql);
-            ps.setString(1, miColor.getCodigoRGB());
-            ps.setInt(2, miColor.getIdNombreColor());
-
-            int filas = ps.executeUpdate();
-            if (filas > 0) {
-                resultado = true;
-            }
-            ps.close();
-        } catch (SQLException e) {
-            System.out.println("Error al modificar color: " + e.getMessage());
-        }
-        return resultado;
-    }
-
-    /* ===================== ELIMINAR COLOR ===================== */
     public boolean eliminarColor(int idColor) {
         boolean resultado = false;
-        Connection conn = conect.getConn();
-        try {
-            String querySql = "DELETE FROM Colores WHERE id_nombre_color = ?";
-            PreparedStatement ps = conn.prepareStatement(querySql);
-            ps.setInt(1, idColor);
-
-            int filas = ps.executeUpdate();
-            if (filas > 0) {
-                resultado = true;
+        try (Connection conn = conect.getConn()) {
+            if (conn == null) return false;
+            try (PreparedStatement ps = conn.prepareStatement("DELETE FROM Colores WHERE id_color = ?")) {
+                ps.setInt(1, idColor);
+                resultado = ps.executeUpdate() > 0;
             }
-            ps.close();
         } catch (SQLException e) {
             System.out.println("Error al eliminar color: " + e.getMessage()
-                    + "\nNota: Si el color esta asociado a productos, primero elimina la relacion.");
+                    + "\nNota: si el color tiene variantes de producto asociadas, primero elimínalas.");
         }
         return resultado;
     }
 
-    /* ===================== LISTAR TODOS LOS COLORES ===================== */
     public List<Colores> listarColores() {
         List<Colores> listaColores = new ArrayList<>();
-        Connection conn = conect.getConn();
-        try {
-            String querySql = "SELECT id_nombre_color, codigoRGB FROM Colores";
-            PreparedStatement ps = conn.prepareStatement(querySql);
-            ResultSet rs = ps.executeQuery();
-            while (rs.next()) {
-                Colores miColor = new Colores();
-                miColor.setIdNombreColor(rs.getInt("id_nombre_color"));
-                miColor.setCodigoRGB(rs.getString("codigoRGB"));
-                listaColores.add(miColor);
+        try (Connection conn = conect.getConn()) {
+            if (conn == null) return listaColores;
+            try (PreparedStatement ps = conn.prepareStatement("SELECT id_color, nombre_color, codigo_hexadecimal FROM Colores ORDER BY id_color");
+                 ResultSet rs = ps.executeQuery()) {
+                while (rs.next()) listaColores.add(mapear(rs));
             }
-            rs.close();
-            ps.close();
         } catch (SQLException e) {
             System.out.println("Error al listar colores: " + e.getMessage());
         }
         return listaColores;
+    }
+
+    private Colores mapear(ResultSet rs) throws SQLException {
+        Colores miColor = new Colores();
+        miColor.setIdColor(rs.getInt("id_color"));
+        miColor.setNombreColor(rs.getString("nombre_color"));
+        miColor.setCodigoHexadecimal(rs.getString("codigo_hexadecimal"));
+        return miColor;
     }
 }

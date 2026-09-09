@@ -1,14 +1,9 @@
-/*
- * Click nbfs://nbhost/SystemFileSystem/Templates/Licenses/license-default.txt to change this license
- * Click nbfs://nbhost/SystemFileSystem/Templates/Classes/Class.java to edit this template
- */
 package Modelo;
 
-/**
- *
- * @author Aprendiz
- */
 public class Talla {
+
+    private int idTalla;
+    private String nombreTalla;
 
     public int getIdTalla() {
         return idTalla;
@@ -18,15 +13,11 @@ public class Talla {
         this.idTalla = idTalla;
     }
 
-    public String getDescripcionTalla() {
-        return descripcionTalla;
+    public String getNombreTalla() {
+        return nombreTalla;
     }
 
-    public void setDescripcionTalla(String descripcionTalla) {
-        this.descripcionTalla = descripcionTalla;
+    public void setNombreTalla(String nombreTalla) {
+        this.nombreTalla = nombreTalla;
     }
-    
-    private int idTalla;
-    private String descripcionTalla;
-    
 }

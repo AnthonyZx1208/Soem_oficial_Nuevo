@@ -1,7 +1,3 @@
-/*
- * Click nbfs://nbhost/SystemFileSystem/Templates/Licenses/license-default.txt to change this license
- * Click nbfs://nbhost/SystemFileSystem/Templates/Classes/Class.java to edit this template
- */
 package Controlador;
 
 import Modelo.ProductosHasColores;
@@ -12,148 +8,69 @@ import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
 
-/**
- *
- * @author Aprendiz
- */
 public class ProductosHasColoresDAO {
 
     private Conexion conect = new Conexion();
 
-    /* ===================== INSERTAR RELACION PRODUCTO-COLOR ===================== */
-    public boolean insertarProductosHasColores(ProductosHasColores miRelacion) {
-        boolean resultado = false;
-        Connection conn = conect.getConn();
-        try {
-            String querySql = "INSERT INTO Producto_has_Colores (Producto_id_producto, Colores_id_nombre_color) "
-                    + "VALUES (?, ?)";
-            PreparedStatement ps = conn.prepareStatement(querySql);
-            ps.setInt(1, miRelacion.getProductoIdProducto());
-            ps.setInt(2, miRelacion.getColoresIdNombreColor());
-
-            int filas = ps.executeUpdate();
-            if (filas > 0) {
-                resultado = true;
+    /** Inserta la variante o, si ya existe (mismo producto+color+talla), actualiza su cantidad. */
+    public boolean guardarVariante(ProductosHasColores v) {
+        String sql = "INSERT INTO Productos_Has_Colores (Producto_id_producto, Colores_id_color, Talla_id_talla, cantidad_disponible) "
+                + "VALUES (?, ?, ?, ?) ON DUPLICATE KEY UPDATE cantidad_disponible = VALUES(cantidad_disponible)";
+        try (Connection conn = conect.getConn()) {
+            if (conn == null) return false;
+            try (PreparedStatement ps = conn.prepareStatement(sql)) {
+                ps.setInt(1, v.getProductoIdProducto());
+                ps.setInt(2, v.getColoresIdColor());
+                ps.setInt(3, v.getTallaIdTalla());
+                ps.setInt(4, v.getCantidadDisponible());
+                return ps.executeUpdate() > 0;
             }
-            ps.close();
         } catch (SQLException e) {
-            System.out.println("Error al insertar relacion producto-color: " + e.getMessage());
+            System.out.println("Error al guardar variante producto-color-talla: " + e.getMessage());
+            return false;
         }
-        return resultado;
     }
 
-    /* ===================== CONSULTAR RELACION PRODUCTO-COLOR ===================== */
-    public ProductosHasColores consultarProductosHasColores(int idProducto, int idColor) {
-        ProductosHasColores miRelacion = null;
-        Connection conn = conect.getConn();
-        try {
-            String querySql = "SELECT Producto_id_producto, Colores_id_nombre_color "
-                    + "FROM Producto_has_Colores WHERE Producto_id_producto = ? AND Colores_id_nombre_color = ?";
-            PreparedStatement ps = conn.prepareStatement(querySql);
-            ps.setInt(1, idProducto);
-            ps.setInt(2, idColor);
-            ResultSet rs = ps.executeQuery();
-            if (rs.next()) {
-                miRelacion = new ProductosHasColores();
-                miRelacion.setProductoIdProducto(rs.getInt("Producto_id_producto"));
-                miRelacion.setColoresIdNombreColor(rs.getInt("Colores_id_nombre_color"));
+    public boolean eliminarVariante(int idProducto, int idColor, int idTalla) {
+        String sql = "DELETE FROM Productos_Has_Colores WHERE Producto_id_producto = ? AND Colores_id_color = ? AND Talla_id_talla = ?";
+        try (Connection conn = conect.getConn()) {
+            if (conn == null) return false;
+            try (PreparedStatement ps = conn.prepareStatement(sql)) {
+                ps.setInt(1, idProducto);
+                ps.setInt(2, idColor);
+                ps.setInt(3, idTalla);
+                return ps.executeUpdate() > 0;
             }
-            rs.close();
-            ps.close();
         } catch (SQLException e) {
-            System.out.println("Error al consultar relacion producto-color: " + e.getMessage());
+            System.out.println("Error al eliminar variante producto-color-talla: " + e.getMessage());
+            return false;
         }
-        return miRelacion;
     }
 
-    /* ===================== ACTUALIZAR RELACION PRODUCTO-COLOR ===================== */
-    public boolean actualizarProductosHasColores(ProductosHasColores miRelacion, int idProductoAntiguo, int idColorAntiguo) {
-        boolean resultado = false;
-        Connection conn = conect.getConn();
-        try {
-            String querySql = "UPDATE Producto_has_Colores SET Producto_id_producto = ?, Colores_id_nombre_color = ? "
-                    + "WHERE Producto_id_producto = ? AND Colores_id_nombre_color = ?";
-            PreparedStatement ps = conn.prepareStatement(querySql);
-            ps.setInt(1, miRelacion.getProductoIdProducto());
-            ps.setInt(2, miRelacion.getColoresIdNombreColor());
-            ps.setInt(3, idProductoAntiguo);
-            ps.setInt(4, idColorAntiguo);
-
-            int filas = ps.executeUpdate();
-            if (filas > 0) {
-                resultado = true;
+    public List<ProductosHasColores> listarPorProducto(int idProducto) {
+        List<ProductosHasColores> lista = new ArrayList<>();
+        String sql = "SELECT Producto_id_producto, Colores_id_color, Talla_id_talla, cantidad_disponible "
+                + "FROM Productos_Has_Colores WHERE Producto_id_producto = ? ORDER BY Colores_id_color, Talla_id_talla";
+        try (Connection conn = conect.getConn()) {
+            if (conn == null) return lista;
+            try (PreparedStatement ps = conn.prepareStatement(sql)) {
+                ps.setInt(1, idProducto);
+                try (ResultSet rs = ps.executeQuery()) {
+                    while (rs.next()) lista.add(mapear(rs));
+                }
             }
-            ps.close();
         } catch (SQLException e) {
-            System.out.println("Error al actualizar relacion producto-color: " + e.getMessage());
+            System.out.println("Error al listar variantes del producto: " + e.getMessage());
         }
-        return resultado;
+        return lista;
     }
 
-    /* ===================== MODIFICAR RELACION PRODUCTO-COLOR ===================== */
-    public boolean modificarProductosHasColores(ProductosHasColores miRelacion, int idProductoAntiguo, int idColorAntiguo) {
-        boolean resultado = false;
-        Connection conn = conect.getConn();
-        try {
-            String querySql = "UPDATE Producto_has_Colores SET Producto_id_producto = ?, Colores_id_nombre_color = ? "
-                    + "WHERE Producto_id_producto = ? AND Colores_id_nombre_color = ?";
-            PreparedStatement ps = conn.prepareStatement(querySql);
-            ps.setInt(1, miRelacion.getProductoIdProducto());
-            ps.setInt(2, miRelacion.getColoresIdNombreColor());
-            ps.setInt(3, idProductoAntiguo);
-            ps.setInt(4, idColorAntiguo);
-
-            int filas = ps.executeUpdate();
-            if (filas > 0) {
-                resultado = true;
-            }
-            ps.close();
-        } catch (SQLException e) {
-            System.out.println("Error al modificar relacion producto-color: " + e.getMessage());
-        }
-        return resultado;
-    }
-
-    /* ===================== ELIMINAR RELACION PRODUCTO-COLOR ===================== */
-    public boolean eliminarProductosHasColores(int idProducto, int idColor) {
-        boolean resultado = false;
-        Connection conn = conect.getConn();
-        try {
-            String querySql = "DELETE FROM Producto_has_Colores WHERE Producto_id_producto = ? AND Colores_id_nombre_color = ?";
-            PreparedStatement ps = conn.prepareStatement(querySql);
-            ps.setInt(1, idProducto);
-            ps.setInt(2, idColor);
-
-            int filas = ps.executeUpdate();
-            if (filas > 0) {
-                resultado = true;
-            }
-            ps.close();
-        } catch (SQLException e) {
-            System.out.println("Error al eliminar relacion producto-color: " + e.getMessage());
-        }
-        return resultado;
-    }
-
-    /* ===================== LISTAR TODAS LAS RELACIONES PRODUCTO-COLOR ===================== */
-    public List<ProductosHasColores> listarProductosHasColores() {
-        List<ProductosHasColores> listaRelaciones = new ArrayList<>();
-        Connection conn = conect.getConn();
-        try {
-            String querySql = "SELECT Producto_id_producto, Colores_id_nombre_color FROM Producto_has_Colores";
-            PreparedStatement ps = conn.prepareStatement(querySql);
-            ResultSet rs = ps.executeQuery();
-            while (rs.next()) {
-                ProductosHasColores miRelacion = new ProductosHasColores();
-                miRelacion.setProductoIdProducto(rs.getInt("Producto_id_producto"));
-                miRelacion.setColoresIdNombreColor(rs.getInt("Colores_id_nombre_color"));
-                listaRelaciones.add(miRelacion);
-            }
-            rs.close();
-            ps.close();
-        } catch (SQLException e) {
-            System.out.println("Error al listar relaciones producto-color: " + e.getMessage());
-        }
-        return listaRelaciones;
+    private ProductosHasColores mapear(ResultSet rs) throws SQLException {
+        ProductosHasColores v = new ProductosHasColores();
+        v.setProductoIdProducto(rs.getInt("Producto_id_producto"));
+        v.setColoresIdColor(rs.getInt("Colores_id_color"));
+        v.setTallaIdTalla(rs.getInt("Talla_id_talla"));
+        v.setCantidadDisponible(rs.getInt("cantidad_disponible"));
+        return v;
     }
 }

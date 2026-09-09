@@ -115,6 +115,8 @@ CREATE TABLE Producto (
     Categoria_id_categoria INT UNSIGNED NOT NULL,
     SubCategoria_id_subcategoria INT UNSIGNED NULL,
     estado ENUM('Activo','Inactivo') NOT NULL DEFAULT 'Activo',
+    fecha_inicio_oferta DATETIME NULL,
+    fecha_fin_oferta DATETIME NULL,
     fecha_creacion TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
     fecha_actualizacion TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
     KEY ix_producto_categoria (Categoria_id_categoria),

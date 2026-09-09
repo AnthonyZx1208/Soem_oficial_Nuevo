@@ -9,6 +9,7 @@ import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.sql.Timestamp;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -23,7 +24,8 @@ public class ProductoDAO {
     private static final String COLUMNAS =
             "id_producto, nombre_producto, descripcion, precio_producto, precio_oferta, "
             + "cantidad_stock, fecha_creacion, fecha_actualizacion, imagen_principal, "
-            + "Categoria_id_categoria, SubCategoria_id_subcategoria, estado";
+            + "Categoria_id_categoria, SubCategoria_id_subcategoria, estado, "
+            + "fecha_inicio_oferta, fecha_fin_oferta";
 
     /* ===================== INSERTAR PRODUCTO ===================== */
     public boolean insertarProducto(Producto miProducto) {
@@ -31,8 +33,9 @@ public class ProductoDAO {
         Connection conn = conect.getConn();
         try {
             String querySql = "INSERT INTO Producto (nombre_producto, descripcion, precio_producto, precio_oferta, "
-                    + "cantidad_stock, imagen_principal, Categoria_id_categoria, SubCategoria_id_subcategoria, estado) "
-                    + "VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)";
+                    + "cantidad_stock, imagen_principal, Categoria_id_categoria, SubCategoria_id_subcategoria, estado, "
+                    + "fecha_inicio_oferta, fecha_fin_oferta) "
+                    + "VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)";
             PreparedStatement ps = conn.prepareStatement(querySql);
             ps.setString(1, miProducto.getNombre_producto());
             ps.setString(2, miProducto.getDescripcion());
@@ -51,6 +54,16 @@ public class ProductoDAO {
                 ps.setNull(8, java.sql.Types.INTEGER);
             }
             ps.setString(9, miProducto.getEstado() != null ? miProducto.getEstado() : "Activo");
+            if (miProducto.getFecha_inicio_oferta() != null) {
+                ps.setTimestamp(10, miProducto.getFecha_inicio_oferta());
+            } else {
+                ps.setNull(10, java.sql.Types.TIMESTAMP);
+            }
+            if (miProducto.getFecha_fin_oferta() != null) {
+                ps.setTimestamp(11, miProducto.getFecha_fin_oferta());
+            } else {
+                ps.setNull(11, java.sql.Types.TIMESTAMP);
+            }
 
             int filas = ps.executeUpdate();
             if (filas > 0) {
@@ -90,7 +103,8 @@ public class ProductoDAO {
         try {
             String querySql = "UPDATE Producto SET nombre_producto = ?, descripcion = ?, precio_producto = ?, "
                     + "precio_oferta = ?, cantidad_stock = ?, imagen_principal = ?, Categoria_id_categoria = ?, "
-                    + "SubCategoria_id_subcategoria = ?, estado = ? WHERE id_producto = ?";
+                    + "SubCategoria_id_subcategoria = ?, estado = ?, fecha_inicio_oferta = ?, fecha_fin_oferta = ? "
+                    + "WHERE id_producto = ?";
             PreparedStatement ps = conn.prepareStatement(querySql);
             ps.setString(1, miProducto.getNombre_producto());
             ps.setString(2, miProducto.getDescripcion());
@@ -109,7 +123,17 @@ public class ProductoDAO {
                 ps.setNull(8, java.sql.Types.INTEGER);
             }
             ps.setString(9, miProducto.getEstado());
-            ps.setInt(10, miProducto.getId_producto());
+            if (miProducto.getFecha_inicio_oferta() != null) {
+                ps.setTimestamp(10, miProducto.getFecha_inicio_oferta());
+            } else {
+                ps.setNull(10, java.sql.Types.TIMESTAMP);
+            }
+            if (miProducto.getFecha_fin_oferta() != null) {
+                ps.setTimestamp(11, miProducto.getFecha_fin_oferta());
+            } else {
+                ps.setNull(11, java.sql.Types.TIMESTAMP);
+            }
+            ps.setInt(12, miProducto.getId_producto());
 
             int filas = ps.executeUpdate();
             if (filas > 0) {
@@ -224,6 +248,24 @@ public class ProductoDAO {
         int subCategoria = rs.getInt("SubCategoria_id_subcategoria");
         miProducto.setSubCategoria_id_subcategoria(rs.wasNull() ? null : subCategoria);
         miProducto.setEstado(rs.getString("estado"));
+        miProducto.setFecha_inicio_oferta(rs.getTimestamp("fecha_inicio_oferta"));
+        miProducto.setFecha_fin_oferta(rs.getTimestamp("fecha_fin_oferta"));
+        if (miProducto.getPrecio_oferta() != null
+                && !ofertaVigente(miProducto.getFecha_inicio_oferta(), miProducto.getFecha_fin_oferta())) {
+            miProducto.setPrecio_oferta(null);
+        }
         return miProducto;
+    }
+
+    /**
+     * Una oferta sin fechas es siempre vigente; con fechas, solo lo es dentro
+     * de la ventana [inicio, fin]. La usan también TiendaDAO (bloqueo de fila
+     * en checkout) para que el precio cobrado coincida con el mostrado.
+     */
+    public static boolean ofertaVigente(Timestamp inicio, Timestamp fin) {
+        long ahora = System.currentTimeMillis();
+        if (inicio != null && ahora < inicio.getTime()) return false;
+        if (fin != null && ahora > fin.getTime()) return false;
+        return true;
     }
 }

@@ -1,32 +1,32 @@
-/*
- * Click nbfs://nbhost/SystemFileSystem/Templates/Licenses/license-default.txt to change this license
- * Click nbfs://nbhost/SystemFileSystem/Templates/Classes/Class.java to edit this template
- */
 package Modelo;
 
-/**
- *
- * @author Aprendiz
- */
 public class Colores {
 
-    public int getIdNombreColor() {
-        return idNombreColor;
+    private int idColor;
+    private String nombreColor;
+    private String codigoHexadecimal;
+
+    public int getIdColor() {
+        return idColor;
     }
 
-    public void setIdNombreColor(int idNombreColor) {
-        this.idNombreColor = idNombreColor;
+    public void setIdColor(int idColor) {
+        this.idColor = idColor;
     }
 
-    public String getCodigoRGB() {
-        return codigoRGB;
+    public String getNombreColor() {
+        return nombreColor;
     }
 
-    public void setCodigoRGB(String codigoRGB) {
-        this.codigoRGB = codigoRGB;
+    public void setNombreColor(String nombreColor) {
+        this.nombreColor = nombreColor;
     }
-    
-    private int idNombreColor;
-    private String codigoRGB;
-    
+
+    public String getCodigoHexadecimal() {
+        return codigoHexadecimal;
+    }
+
+    public void setCodigoHexadecimal(String codigoHexadecimal) {
+        this.codigoHexadecimal = codigoHexadecimal;
+    }
 }

@@ -1,14 +1,11 @@
-/*
- * Click nbfs://nbhost/SystemFileSystem/Templates/Licenses/license-default.txt to change this license
- * Click nbfs://nbhost/SystemFileSystem/Templates/Classes/Class.java to edit this template
- */
 package Modelo;
 
-/**
- *
- * @author Aprendiz
- */
 public class ProductosHasColores {
+
+    private int productoIdProducto;
+    private int coloresIdColor;
+    private int tallaIdTalla;
+    private int cantidadDisponible;
 
     public int getProductoIdProducto() {
         return productoIdProducto;
@@ -18,15 +15,27 @@ public class ProductosHasColores {
         this.productoIdProducto = productoIdProducto;
     }
 
-    public int getColoresIdNombreColor() {
-        return coloresIdNombreColor;
+    public int getColoresIdColor() {
+        return coloresIdColor;
     }
 
-    public void setColoresIdNombreColor(int coloresIdNombreColor) {
-        this.coloresIdNombreColor = coloresIdNombreColor;
+    public void setColoresIdColor(int coloresIdColor) {
+        this.coloresIdColor = coloresIdColor;
     }
-    
-    private int productoIdProducto;
-    private int coloresIdNombreColor;
-    
+
+    public int getTallaIdTalla() {
+        return tallaIdTalla;
+    }
+
+    public void setTallaIdTalla(int tallaIdTalla) {
+        this.tallaIdTalla = tallaIdTalla;
+    }
+
+    public int getCantidadDisponible() {
+        return cantidadDisponible;
+    }
+
+    public void setCantidadDisponible(int cantidadDisponible) {
+        this.cantidadDisponible = cantidadDisponible;
+    }
 }
