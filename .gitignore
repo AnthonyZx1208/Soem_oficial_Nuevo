@@ -1,0 +1,11 @@
+# Build output and editor files
+/build/
+/dist/
+/nbproject/private/
+*.class
+*.log
+
+# Local secrets
+.env
+.env.*
+!env.example

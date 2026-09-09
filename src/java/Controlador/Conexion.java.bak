@@ -1,0 +1,44 @@
+package Controlador;
+
+import java.sql.Connection;
+import java.sql.DriverManager;
+import java.sql.SQLException;
+
+public class Conexion {
+
+    private static final String DRIVER = "com.mysql.cj.jdbc.Driver";
+
+    private final String url = obtenerUrl();
+    private final String user = obtenerValor("SOEM_DB_USER", "root");
+    private final String password = obtenerValor("SOEM_DB_PASSWORD", "");
+
+    public Connection getConn() {
+        try {
+            Class.forName(DRIVER);
+            return DriverManager.getConnection(url, user, password);
+        } catch (ClassNotFoundException | SQLException exception) {
+            System.err.println("No fue posible conectar con la base de datos: " + exception.getMessage());
+            return null;
+        }
+    }
+
+    private String obtenerUrl() {
+        String urlConfigurada = System.getenv("SOEM_DB_URL");
+        if (urlConfigurada != null && !urlConfigurada.isBlank()) {
+            return urlConfigurada;
+        }
+
+        String host = obtenerValor("SOEM_DB_HOST", "localhost");
+        String puerto = obtenerValor("SOEM_DB_PORT", "3306");
+        String baseDatos = obtenerValor("SOEM_DB_NAME", "soem_oficial");
+
+        return "jdbc:mysql://" + host + ":" + puerto + "/" + baseDatos
+                + "?useUnicode=true&characterEncoding=UTF-8&useSSL=true"
+                + "&requireSSL=false&serverTimezone=America/Bogota";
+    }
+
+    private String obtenerValor(String nombre, String valorPredeterminado) {
+        String valor = System.getenv(nombre);
+        return valor == null || valor.isBlank() ? valorPredeterminado : valor;
+    }
+}

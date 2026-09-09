@@ -1,0 +1,73 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<web-app version="4.0" xmlns="http://xmlns.jcp.org/xml/ns/javaee" 
+    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" 
+    xsi:schemaLocation="http://xmlns.jcp.org/xml/ns/javaee http://xmlns.jcp.org/xml/ns/javaee/web-app_4_0.xsd">
+    
+    <!-- INFORMACIÓN DE LA APLICACIÓN -->
+    <display-name>SOEM Oficial - Tienda de Ropa</display-name>
+    <description>Plataforma e-commerce para venta de ropa</description>
+    
+    <!-- PÁGINA DE INICIO -->
+    <welcome-file-list>
+        <welcome-file>index.html</welcome-file>
+        <welcome-file>index.jsp</welcome-file>
+    </welcome-file-list>
+    
+    <!-- CONFIGURACIÓN DE SESIÓN -->
+    <session-config>
+        <session-timeout>30</session-timeout>
+        <cookie-config>
+            <http-only>true</http-only>
+            <secure>false</secure>
+        </cookie-config>
+        <tracking-mode>COOKIE</tracking-mode>
+    </session-config>
+    
+    <!-- PARÁMETROS DE CONTEXTO -->
+    <context-param>
+        <param-name>db.url</param-name>
+        <param-value>jdbc:mariadb://localhost:3306/soem_oficial</param-value>
+    </context-param>
+    <context-param>
+        <param-name>db.user</param-name>
+        <param-value>root</param-value>
+    </context-param>
+    <context-param>
+        <param-name>db.password</param-name>
+        <param-value></param-value>
+    </context-param>
+    
+    <!-- MAPEO DE SERVLETS - Ya están mapeados con @WebServlet en código fuente -->
+    <!-- Los siguientes servlets están automáticamente mapeados: -->
+    <!-- 
+    - /login → LoginServlet
+    - /register → RegisterServlet  
+    - /home, /index → HomeServlet
+    - /producto → ProductoServlet
+    - /cart → CartServlet
+    - /logout → LogoutServlet
+    - /categoria → CategoriaServlet
+    -->
+    
+    <!-- CONFIGURACIÓN DE ERRORES -->
+    <error-page>
+        <error-code>404</error-code>
+        <location>/error404.jsp</location>
+    </error-page>
+    
+    <error-page>
+        <error-code>500</error-code>
+        <location>/error500.jsp</location>
+    </error-page>
+    
+    <!-- MIME TYPES -->
+    <mime-mapping>
+        <extension>weba</extension>
+        <mime-type>audio/webp</mime-type>
+    </mime-mapping>
+    <mime-mapping>
+        <extension>webp</extension>
+        <mime-type>image/webp</mime-type>
+    </mime-mapping>
+
+</web-app>
