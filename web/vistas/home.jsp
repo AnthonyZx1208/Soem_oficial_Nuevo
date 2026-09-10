@@ -12,6 +12,11 @@ for(Categoria c:categorias){
     else if(n.contains("niña")||n.contains("nina"))catNinas=c;
     else if(n.contains("niño")||n.contains("nino"))catNinos=c;
 }
+%><%!
+private String urlImagenCategoria(String ctx, String valor, String fallback) {
+    if (valor == null) return fallback;
+    return valor.startsWith("http") ? valor : ctx + "/" + valor;
+}
 %><!doctype html>
 <html lang="es">
     <head>
@@ -44,7 +49,7 @@ for(Categoria c:categorias){
     <%if(catMujeres!=null||catHombres!=null){%><section class="hero-carousel">
         <div id="heroCarrusel" class="carousel slide" data-bs-ride="carousel">
             <div class="carousel-inner"><%if(catMujeres!=null){%>
-                <div class="carousel-item active" style="background-image:url('<%=catMujeres.getImagen_url()!=null?catMujeres.getImagen_url():"https://images.unsplash.com/photo-1483985988355-763728e1935b?auto=format&fit=crop&w=1800&q=85"%>')">
+                <div class="carousel-item active" style="background-image:url('<%=urlImagenCategoria(ctx,catMujeres.getImagen_url(),"https://images.unsplash.com/photo-1483985988355-763728e1935b?auto=format&fit=crop&w=1800&q=85")%>')">
                     <div class="container hero-caption">
                         <p class="eyebrow">Nueva colección</p>
                         <h1>Moda para ellas.</h1>
@@ -52,7 +57,7 @@ for(Categoria c:categorias){
                         <a class="btn btn-gold btn-lg px-4 me-2" href="<%=ctx%>/categoria?id=<%=catMujeres.getId_categoria()%>">Ver mujeres</a><%if(catHombres!=null){%><a class="btn btn-outline-light btn-lg px-4" href="<%=ctx%>/categoria?id=<%=catHombres.getId_categoria()%>">Ver hombres</a><%}%>
                     </div>
                 </div><%}if(catHombres!=null){%>
-                <div class="carousel-item<%=catMujeres==null?" active":""%>" style="background-image:url('<%=catHombres.getImagen_url()!=null?catHombres.getImagen_url():"https://images.unsplash.com/photo-1441984904996-e0b6ba687e04?auto=format&fit=crop&w=1800&q=85"%>')">
+                <div class="carousel-item<%=catMujeres==null?" active":""%>" style="background-image:url('<%=urlImagenCategoria(ctx,catHombres.getImagen_url(),"https://images.unsplash.com/photo-1441984904996-e0b6ba687e04?auto=format&fit=crop&w=1800&q=85")%>')">
                     <div class="container hero-caption">
                         <p class="eyebrow">Nueva colección</p>
                         <h1>Moda para ellos.</h1>
@@ -121,13 +126,13 @@ for(Categoria c:categorias){
         <p class="eyebrow">Explora</p>
         <h2 class="section-title mb-4">Completa tu look</h2>
         <div class="editorial-grid"><%if(catNinas!=null){%>
-            <a class="editorial-tile text-decoration-none" href="<%=ctx%>/categoria?id=<%=catNinas.getId_categoria()%>" style="background-image:url('<%=catNinas.getImagen_url()!=null?catNinas.getImagen_url():"https://images.unsplash.com/photo-1519238263530-99bdd11df2ea?auto=format&fit=crop&w=900&q=80"%>')">
+            <a class="editorial-tile text-decoration-none" href="<%=ctx%>/categoria?id=<%=catNinas.getId_categoria()%>" style="background-image:url('<%=urlImagenCategoria(ctx,catNinas.getImagen_url(),"https://images.unsplash.com/photo-1519238263530-99bdd11df2ea?auto=format&fit=crop&w=900&q=80")%>')">
                 <div class="editorial-caption">
                     <h3><%=Util.escapeHtml(catNinas.getNombre_categoria())%></h3>
                     <span class="text-gold fw-bold">Ver colección →</span>
                 </div>
             </a><%}if(catNinos!=null){%>
-            <a class="editorial-tile text-decoration-none" href="<%=ctx%>/categoria?id=<%=catNinos.getId_categoria()%>" style="background-image:url('<%=catNinos.getImagen_url()!=null?catNinos.getImagen_url():"https://images.unsplash.com/photo-1503919545889-aef636e10ad4?auto=format&fit=crop&w=900&q=80"%>')">
+            <a class="editorial-tile text-decoration-none" href="<%=ctx%>/categoria?id=<%=catNinos.getId_categoria()%>" style="background-image:url('<%=urlImagenCategoria(ctx,catNinos.getImagen_url(),"https://images.unsplash.com/photo-1503919545889-aef636e10ad4?auto=format&fit=crop&w=900&q=80")%>')">
                 <div class="editorial-caption">
                     <h3><%=Util.escapeHtml(catNinos.getNombre_categoria())%></h3>
                     <span class="text-gold fw-bold">Ver colección →</span>

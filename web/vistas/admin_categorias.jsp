@@ -13,15 +13,16 @@
     <div class="row g-4">
         <div class="col-lg-5">
             <h2 class="h5 mb-3"><%=editando!=null?"Editar categoría":"Nueva categoría"%></h2>
-            <form class="bg-white p-4" method="post" action="<%=ctx%>/admin/categorias">
+            <form class="bg-white p-4" method="post" action="<%=ctx%>/admin/categorias" enctype="multipart/form-data">
                 <input type="hidden" name="csrf" value="<%=csrf%>">
                 <input type="hidden" name="action" value="<%=editando!=null?"actualizar":"crear"%>"><%if(editando!=null){%><input type="hidden" name="id" value="<%=editando.getId_categoria()%>"><%}%>
                 <label class="form-label">Nombre</label>
                 <input class="form-control mb-3" name="nombre" required value="<%=editando!=null?Util.escapeHtml(editando.getNombre_categoria()):""%>">
                 <label class="form-label">Descripción</label>
                 <textarea class="form-control mb-3" name="descripcion" rows="3"><%=editando!=null&&editando.getDescripcion()!=null?Util.escapeHtml(editando.getDescripcion()):""%></textarea>
-                <label class="form-label">Imagen (URL)</label>
-                <input class="form-control mb-3" name="imagenUrl" value="<%=editando!=null&&editando.getImagen_url()!=null?Util.escapeHtml(editando.getImagen_url()):""%>">
+                <label class="form-label">Imagen<%if(editando!=null&&editando.getImagen_url()!=null){%> (deja vacío para conservar la actual)<%}%></label><%if(editando!=null&&editando.getImagen_url()!=null){%>
+                <div class="mb-2"><img src="<%=editando.getImagen_url().startsWith("http")?editando.getImagen_url():ctx+"/"+editando.getImagen_url()%>" alt="" style="height:60px;border-radius:.25rem"></div><%}%>
+                <input class="form-control mb-3" type="file" name="imagen" accept=".jpg,.jpeg,.png,.webp,.gif">
                 <label class="form-label">Estado</label>
                 <select class="form-select mb-4" name="estado">
                     <option value="Activo" <%=editando==null||"Activo".equals(editando.getEstado())?"selected":""%>>Activo</option>
