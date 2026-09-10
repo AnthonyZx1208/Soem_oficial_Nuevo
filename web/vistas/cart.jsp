@@ -1,4 +1,4 @@
-<%@page contentType="text/html" pageEncoding="UTF-8"%><%@page import="java.util.*,Modelo.CarritoCompra,Modelo.Producto,Controlador.ProductoDAO,java.text.NumberFormat"%><%String ctx=request.getContextPath();List<CarritoCompra> items=(List<CarritoCompra>)request.getAttribute("carrito");double total=(Double)request.getAttribute("total");int unidades=(Integer)request.getAttribute("unidades");NumberFormat cop=NumberFormat.getCurrencyInstance(new Locale("es","CO"));ProductoDAO productosDao=new ProductoDAO();%><!doctype html>
+<%@page contentType="text/html" pageEncoding="UTF-8"%><%@page import="java.util.*,Modelo.CarritoCompra,Modelo.Producto,Controlador.ProductoDAO,java.text.NumberFormat,Seguridad.Util"%><%String ctx=request.getContextPath();List<CarritoCompra> items=(List<CarritoCompra>)request.getAttribute("carrito");double total=(Double)request.getAttribute("total");int unidades=(Integer)request.getAttribute("unidades");NumberFormat cop=NumberFormat.getCurrencyInstance(new Locale("es","CO"));ProductoDAO productosDao=new ProductoDAO();%><!doctype html>
 <html lang="es">
     <head>
         <meta charset="UTF-8">
@@ -15,9 +15,9 @@
 </div><%}else{%><div class="row g-4">
 <div class="col-lg-8">
     <div class="bg-white p-3"><%for(int i=0;i<items.size();i++){CarritoCompra item=items.get(i);Producto p=productosDao.consultarProducto(item.getProductoIdProducto());if(p==null)continue;%><div class="d-flex gap-3 border-bottom py-3">
-    <img class="cart-thumb" src="<%=p.getImagen_principal()!=null&&p.getImagen_principal().startsWith("http")?p.getImagen_principal():ctx+"/"+p.getImagen_principal()%>" alt="">
+    <img class="cart-thumb" src="<%=p.getImagen_principal()!=null&&p.getImagen_principal().startsWith("http")?p.getImagen_principal():ctx+"/"+p.getImagen_principal()%>" alt="" onerror="this.onerror=null;this.src='<%=ctx%>/assets/sin-imagen.svg'">
     <div class="flex-grow-1">
-        <strong><%=p.getNombre_producto()%></strong>
+        <strong><%=Util.escapeHtml(p.getNombre_producto())%></strong>
         <div class="small text-secondary">Talla y color seleccionados</div>
         <span class="price"><%=cop.format(item.getPrecioUnitario())%></span>
     </div>

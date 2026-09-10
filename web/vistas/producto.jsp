@@ -13,7 +13,7 @@
     </nav>
     <div class="row g-5">
         <div class="col-lg-6 position-relative">
-            <img class="product-detail-image" src="<%=p.getImagen_principal()!=null&&p.getImagen_principal().startsWith("http")?p.getImagen_principal():ctx+"/"+p.getImagen_principal()%>" alt="<%=Util.escapeHtml(p.getNombre_producto())%>"><%if(p.getCantidad_stock()==0){%><span class="badge badge-stockout position-absolute top-50 start-50 translate-middle p-3">SIN STOCK</span><%}%></div>
+            <img class="product-detail-image" src="<%=p.getImagen_principal()!=null&&p.getImagen_principal().startsWith("http")?p.getImagen_principal():ctx+"/"+p.getImagen_principal()%>" alt="<%=Util.escapeHtml(p.getNombre_producto())%>" onerror="this.onerror=null;this.src='<%=ctx%>/assets/sin-imagen.svg'"><%if(p.getCantidad_stock()==0){%><span class="badge badge-stockout position-absolute top-50 start-50 translate-middle p-3">SIN STOCK</span><%}%></div>
             <div class="col-lg-6">
                 <p class="eyebrow">SOEM Oficial</p>
                 <h1 class="display-6 fw-bold"><%=Util.escapeHtml(p.getNombre_producto())%></h1>

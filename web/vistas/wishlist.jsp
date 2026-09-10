@@ -12,7 +12,7 @@
     <h1 class="section-title">Lista de deseos</h1>
     <div class="row g-4 mt-1"><%for(Map<String,Object> p:deseos){%><div class="col-sm-6 col-lg-4">
     <article class="product-card">
-        <%String imagen=String.valueOf(p.get("imagen_principal"));%><img class="product-image" src="<%=imagen.startsWith("http")?imagen:ctx+"/"+imagen%>" alt="">
+        <%String imagen=String.valueOf(p.get("imagen_principal"));%><img class="product-image" src="<%=imagen.startsWith("http")?imagen:ctx+"/"+imagen%>" alt="" onerror="this.onerror=null;this.src='<%=ctx%>/assets/sin-imagen.svg'">
         <div class="card-body">
             <h2 class="h6"><%=Util.escapeHtml(p.get("nombre_producto"))%></h2>
             <p class="price"><%=cop.format(p.get("precio_oferta")!=null?p.get("precio_oferta"):p.get("precio_producto"))%></p>

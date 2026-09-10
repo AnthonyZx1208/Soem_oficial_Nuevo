@@ -272,11 +272,14 @@ INSERT INTO Unidad (nombre_unidad) VALUES ('Unidad'),('Par'),('Conjunto');
 INSERT INTO Categoria (nombre_categoria,descripcion,estado) VALUES ('Hombres','Moda masculina','Activo'),('Mujeres','Moda femenina','Activo'),('Niñas','Moda para niñas','Activo'),('Niños','Moda para niños','Activo');
 INSERT INTO SubCategoria (nombre_subcategoria,Categoria_id_categoria) VALUES ('Pantalones',1),('Camisas',1),('Chaquetas',1),('Pantalones',2),('Blusas',2),('Tops',2),('Busos',3),('Chaquetas',4);
 INSERT INTO Producto (nombre_producto,descripcion,precio_producto,precio_oferta,cantidad_stock,imagen_principal,Categoria_id_categoria,SubCategoria_id_subcategoria) VALUES
-('Pantalón clásico negro','Pantalón de vestir de corte moderno.',89999,69999,50,'https://images.unsplash.com/photo-1542272604-787c62d465d1?w=900',1,1),
-('Camisa blanca manga corta','Camisa casual cómoda y versátil.',49999,NULL,100,'https://images.unsplash.com/photo-1596215174519-e21a6028cb29?w=900',1,2),
-('Blusa elegante dorada','Blusa con acabados dorados para ocasiones especiales.',79999,59999,30,'https://images.unsplash.com/photo-1552062407-291826ab63fd?w=900',2,5),
-('Top deportivo','Top ligero y transpirable.',39999,NULL,75,'https://images.unsplash.com/photo-1506629082632-5b940e2ac6e2?w=900',2,6),
-('Buso casual gris','Buso suave para uso diario.',59999,NULL,60,'https://images.unsplash.com/photo-1556821552-5c63f6f8c947?w=900',3,7);
+('Pantalón clásico negro','Pantalón de vestir de corte moderno.',89999,69999,50,NULL,1,1),
+('Camisa blanca manga corta','Camisa casual cómoda y versátil.',49999,NULL,100,NULL,1,2),
+('Blusa elegante dorada','Blusa con acabados dorados para ocasiones especiales.',79999,59999,30,NULL,2,5),
+('Top deportivo','Top ligero y transpirable.',39999,NULL,75,NULL,2,6),
+('Buso casual gris','Buso suave para uso diario.',59999,NULL,60,NULL,3,7);
+-- Sin imagen_principal a propósito: las URLs de Unsplash originales fueron dadas
+-- de baja (404) y se detectaron al probar el sitio. Sube la foto real de cada
+-- producto desde /admin/productos (o un UPDATE si prefieres cargarlas por SQL).
 INSERT INTO Productos_Has_Colores VALUES (1,1,3,50),(2,2,3,100),(3,3,2,30),(4,4,3,75),(5,1,4,60);
 INSERT INTO Configuracion_Sitio (id_config,nombre_tienda,contacto_email,descripcion_tienda) VALUES (1,'SOEM Oficial','info@soemoficial.com','Moda para toda la familia.');
 

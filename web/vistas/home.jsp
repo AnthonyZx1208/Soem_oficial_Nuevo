@@ -35,7 +35,7 @@ private String urlImagenCategoria(String ctx, String valor, String fallback) {
         <div class="row g-4"><%for(Producto p:resultadosBusqueda){double precio=p.getPrecio_oferta()!=null?p.getPrecio_oferta():p.getPrecio_producto();int descuento=p.getPrecio_oferta()==null?0:(int)((p.getPrecio_producto()-p.getPrecio_oferta())*100/p.getPrecio_producto());%><div class="col-sm-6 col-lg-3">
         <article class="product-card h-100">
             <div class="position-relative">
-                <img class="product-image" src="<%=p.getImagen_principal()!=null&&p.getImagen_principal().startsWith("http")?p.getImagen_principal():ctx+"/"+p.getImagen_principal()%>" alt="<%=Util.escapeHtml(p.getNombre_producto())%>"><%if(p.getCantidad_stock()==0){%><span class="badge badge-stockout position-absolute top-0 start-0 m-3">SIN STOCK</span><%}else if(descuento>0){%><span class="badge badge-offer position-absolute top-0 start-0 m-3">-<%=descuento%>%</span><%}%></div>
+                <img class="product-image" src="<%=p.getImagen_principal()!=null&&p.getImagen_principal().startsWith("http")?p.getImagen_principal():ctx+"/"+p.getImagen_principal()%>" alt="<%=Util.escapeHtml(p.getNombre_producto())%>" onerror="this.onerror=null;this.src='<%=ctx%>/assets/sin-imagen.svg'"><%if(p.getCantidad_stock()==0){%><span class="badge badge-stockout position-absolute top-0 start-0 m-3">SIN STOCK</span><%}else if(descuento>0){%><span class="badge badge-offer position-absolute top-0 start-0 m-3">-<%=descuento%>%</span><%}%></div>
             <div class="card-body d-flex flex-column">
                 <h3 class="h6"><%=Util.escapeHtml(p.getNombre_producto())%></h3>
                 <p class="mb-1"><%if(descuento>0){%><span class="old-price"><%=cop.format(p.getPrecio_producto())%></span><%}%> <span class="price"><%=cop.format(precio)%></span>
@@ -82,7 +82,7 @@ private String urlImagenCategoria(String ctx, String valor, String fallback) {
             <div class="carrusel-horizontal" id="carruselDestacados"><%for(Producto p:destacados){double precio=p.getPrecio_oferta()!=null?p.getPrecio_oferta():p.getPrecio_producto();int descuento=p.getPrecio_oferta()==null?0:(int)((p.getPrecio_producto()-p.getPrecio_oferta())*100/p.getPrecio_producto());%>
             <article class="product-card">
                 <div class="position-relative">
-                    <img class="product-image" src="<%=p.getImagen_principal()!=null&&p.getImagen_principal().startsWith("http")?p.getImagen_principal():ctx+"/"+p.getImagen_principal()%>" alt="<%=Util.escapeHtml(p.getNombre_producto())%>"><%if(p.getCantidad_stock()==0){%><span class="badge badge-stockout position-absolute top-0 start-0 m-3">SIN STOCK</span><%}else if(descuento>0){%><span class="badge badge-offer position-absolute top-0 start-0 m-3">-<%=descuento%>%</span><%}%></div>
+                    <img class="product-image" src="<%=p.getImagen_principal()!=null&&p.getImagen_principal().startsWith("http")?p.getImagen_principal():ctx+"/"+p.getImagen_principal()%>" alt="<%=Util.escapeHtml(p.getNombre_producto())%>" onerror="this.onerror=null;this.src='<%=ctx%>/assets/sin-imagen.svg'"><%if(p.getCantidad_stock()==0){%><span class="badge badge-stockout position-absolute top-0 start-0 m-3">SIN STOCK</span><%}else if(descuento>0){%><span class="badge badge-offer position-absolute top-0 start-0 m-3">-<%=descuento%>%</span><%}%></div>
                 <div class="card-body d-flex flex-column">
                     <h3 class="h6"><%=Util.escapeHtml(p.getNombre_producto())%></h3>
                     <p class="mb-1"><%if(descuento>0){%><span class="old-price"><%=cop.format(p.getPrecio_producto())%></span><%}%> <span class="price"><%=cop.format(precio)%></span>
@@ -109,7 +109,7 @@ private String urlImagenCategoria(String ctx, String valor, String fallback) {
             <div class="carrusel-horizontal" id="carruselOfertas"><%for(Producto p:ofertas){double precio=p.getPrecio_oferta();int descuento=(int)((p.getPrecio_producto()-p.getPrecio_oferta())*100/p.getPrecio_producto());%>
             <article class="product-card">
                 <div class="position-relative">
-                    <img class="product-image" src="<%=p.getImagen_principal()!=null&&p.getImagen_principal().startsWith("http")?p.getImagen_principal():ctx+"/"+p.getImagen_principal()%>" alt="<%=Util.escapeHtml(p.getNombre_producto())%>"><span class="badge badge-offer position-absolute top-0 start-0 m-3">-<%=descuento%>%</span></div>
+                    <img class="product-image" src="<%=p.getImagen_principal()!=null&&p.getImagen_principal().startsWith("http")?p.getImagen_principal():ctx+"/"+p.getImagen_principal()%>" alt="<%=Util.escapeHtml(p.getNombre_producto())%>" onerror="this.onerror=null;this.src='<%=ctx%>/assets/sin-imagen.svg'"><span class="badge badge-offer position-absolute top-0 start-0 m-3">-<%=descuento%>%</span></div>
                 <div class="card-body d-flex flex-column">
                     <h3 class="h6"><%=Util.escapeHtml(p.getNombre_producto())%></h3>
                     <p class="mb-1"><span class="old-price"><%=cop.format(p.getPrecio_producto())%></span> <span class="price"><%=cop.format(precio)%></span>
@@ -143,7 +143,7 @@ private String urlImagenCategoria(String ctx, String valor, String fallback) {
     <section class="container py-5">
         <h2 class="section-title mb-1">#SOEMOFICIAL</h2>
         <p class="text-secondary mb-4">Etiquétanos con tus looks favoritos.</p>
-        <div class="social-strip"><%for(Producto p:tira){%><a href="<%=ctx%>/producto?id=<%=p.getId_producto()%>"><img src="<%=p.getImagen_principal()!=null&&p.getImagen_principal().startsWith("http")?p.getImagen_principal():ctx+"/"+p.getImagen_principal()%>" alt="<%=Util.escapeHtml(p.getNombre_producto())%>"></a><%}%></div>
+        <div class="social-strip"><%for(Producto p:tira){%><a href="<%=ctx%>/producto?id=<%=p.getId_producto()%>"><img src="<%=p.getImagen_principal()!=null&&p.getImagen_principal().startsWith("http")?p.getImagen_principal():ctx+"/"+p.getImagen_principal()%>" alt="<%=Util.escapeHtml(p.getNombre_producto())%>" onerror="this.onerror=null;this.src='<%=ctx%>/assets/sin-imagen.svg'"></a><%}%></div>
     </section><%}}%>
 </main><%@include file="footer.jsp"%></body>
 </html>
