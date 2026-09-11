@@ -21,7 +21,7 @@
             <ol class="mb-0 mt-2">
                 <li>Realiza el pago por el monto exacto que aparece en tu orden.</li>
                 <li>Envía el comprobante al WhatsApp 315 084 6431 e indica tu número de orden.</li>
-                <li>Tienes 1 hora para completar el pago y enviar el comprobante; después se libera la reserva de inventario.</li>
+                <li>Tienes 24 horas para completar el pago y enviar el comprobante; después se libera la reserva de inventario.</li>
             </ol>
         </div>
         <form method="post" action="<%=ctx%>/checkout" class="mt-4">

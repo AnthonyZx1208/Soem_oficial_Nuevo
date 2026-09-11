@@ -148,14 +148,14 @@ public class TiendaDAO {
                         u.setInt(2,p.getId_producto());
                         u.executeUpdate();
                     }
-                    try(PreparedStatement r=c.prepareStatement("INSERT INTO Reserva_Stock(Cabeza_Factura_id_cabeza_factura,Producto_id_producto,cantidad,estado,fecha_expiracion) VALUES(?,?,?,'Reservado',DATE_ADD(NOW(), INTERVAL 1 HOUR))")) {
+                    try(PreparedStatement r=c.prepareStatement("INSERT INTO Reserva_Stock(Cabeza_Factura_id_cabeza_factura,Producto_id_producto,cantidad,estado,fecha_expiracion) VALUES(?,?,?,'Reservado',DATE_ADD(NOW(), INTERVAL 24 HOUR))")) {
                         r.setInt(1,orden);
                         r.setInt(2,p.getId_producto());
                         r.setInt(3,item.getCantidad());
                         r.executeUpdate();
                     }
                 }
-                registrarEstado(c,orden,"Verificacion de Pago","Orden creada; stock reservado durante 1 hora.");
+                registrarEstado(c,orden,"Verificacion de Pago","Orden creada; stock reservado durante 24 horas.");
                 c.commit();
                 return numero;
             }catch(SQLException ex) {
@@ -187,7 +187,7 @@ public class TiendaDAO {
             }
         }
     }
-    /** Órdenes con stock reservado cuyo plazo de pago (1 hora) ya venció. */
+    /** Órdenes con stock reservado cuyo plazo de pago (24 horas) ya venció. */
     public List<Integer> ordenesConReservaVencida() {
         List<Integer> ordenes = new ArrayList<>();
         String sql = "SELECT DISTINCT Cabeza_Factura_id_cabeza_factura FROM Reserva_Stock "
