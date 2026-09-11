@@ -111,12 +111,7 @@ public class TiendaDAO {
                 List<Producto> productos=new ArrayList<>();
                 for(Modelo.CarritoCompra item:carrito) {
                     Producto p=productoBloqueado(c,item.getProductoIdProducto());
-                    // El stock físico (cantidad_stock) solo se descuenta cuando el admin
-                    // aprueba el pago (ver actualizarEstado). Mientras tanto, lo que ya
-                    // reservaron otras órdenes en verificación se resta aquí para no
-                    // vender de más el mismo cupo disponible.
-                    int reservado=p==null?0:stockReservado(c,p.getId_producto());
-                    if(p==null||(p.getCantidad_stock()-reservado)<item.getCantidad())throw new SQLException("Stock insuficiente para uno de los productos");
+                    if(p==null||p.getCantidad_stock()<item.getCantidad())throw new SQLException("Stock insuficiente para uno de los productos");
                     productos.add(p);
                     total=total.add(BigDecimal.valueOf(item.getPrecioUnitario()).multiply(BigDecimal.valueOf(item.getCantidad())));
                 }
@@ -148,6 +143,11 @@ public class TiendaDAO {
                         d.setBigDecimal(7,precio.multiply(BigDecimal.valueOf(item.getCantidad())));
                         d.executeUpdate();
                     }
+                    try(PreparedStatement u=c.prepareStatement("UPDATE Producto SET cantidad_stock=cantidad_stock-? WHERE id_producto=?")) {
+                        u.setInt(1,item.getCantidad());
+                        u.setInt(2,p.getId_producto());
+                        u.executeUpdate();
+                    }
                     try(PreparedStatement r=c.prepareStatement("INSERT INTO Reserva_Stock(Cabeza_Factura_id_cabeza_factura,Producto_id_producto,cantidad,estado,fecha_expiracion) VALUES(?,?,?,'Reservado',DATE_ADD(NOW(), INTERVAL 7 DAY))")) {
                         r.setInt(1,orden);
                         r.setInt(2,p.getId_producto());
@@ -155,7 +155,7 @@ public class TiendaDAO {
                         r.executeUpdate();
                     }
                 }
-                registrarEstado(c,orden,"Verificacion de Pago","Orden creada; cupo reservado durante siete días en espera de verificación de pago. El stock se descuenta al aprobar el pago.");
+                registrarEstado(c,orden,"Verificacion de Pago","Orden creada; stock reservado durante siete días.");
                 c.commit();
                 return numero;
             }catch(SQLException ex) {
@@ -187,15 +187,6 @@ public class TiendaDAO {
             }
         }
     }
-    /** Cuánto está reservado (esperando verificación) de un producto en otras órdenes. */
-    private int stockReservado(Connection c,int productoId)throws SQLException {
-        try(PreparedStatement ps=c.prepareStatement("SELECT COALESCE(SUM(cantidad),0) FROM Reserva_Stock WHERE Producto_id_producto=? AND estado='Reservado'")) {
-            ps.setInt(1,productoId);
-            try(ResultSet rs=ps.executeQuery()) {
-                return rs.next()?rs.getInt(1):0;
-            }
-        }
-    }
     /** Órdenes con stock reservado cuyo plazo de pago (7 días) ya venció. */
     public List<Integer> ordenesConReservaVencida() {
         List<Integer> ordenes = new ArrayList<>();
@@ -224,23 +215,20 @@ public class TiendaDAO {
                     ps.setInt(3,ordenId);
                     if(ps.executeUpdate()==0)throw new SQLException("Orden no encontrada");
                 }
-                if(!"Verificacion de Pago".equals(estado)&&!"Rechazado".equals(estado)) {
-                    // Cualquier avance más allá de "Verificacion de Pago" (Pago Aprobado
-                    // en adelante) implica que el pago quedó confirmado, así que ahí —y
-                    // solo ahí— se descuenta el stock físico; no al crear la orden. Si el
-                    // admin salta directo a un estado posterior sin pasar por "Pago
-                    // Aprobado", esto igual descuenta el stock una sola vez (las reservas
-                    // ya movidas a 'Confirmado' no vuelven a aparecer en la consulta).
-                    ajustarStockPorReservas(c,ordenId,"Reservado",-1,"Confirmado");
-                }else if("Rechazado".equals(estado)) {
-                    // Reservas aún no aprobadas: se liberan sin tocar stock (nunca se descontó).
-                    try(PreparedStatement u=c.prepareStatement("UPDATE Reserva_Stock SET estado='Liberado' WHERE Cabeza_Factura_id_cabeza_factura=? AND estado='Reservado'")) {
+                if("Rechazado".equals(estado)) {
+                    try(PreparedStatement q=c.prepareStatement("SELECT Producto_id_producto,cantidad FROM Reserva_Stock WHERE Cabeza_Factura_id_cabeza_factura=? AND estado='Reservado'")) {
+                        q.setInt(1,ordenId);
+                        try(ResultSet rs=q.executeQuery()) {
+                            while(rs.next())try(PreparedStatement u=c.prepareStatement("UPDATE Producto SET cantidad_stock=cantidad_stock+? WHERE id_producto=?")) {
+                                u.setInt(1,rs.getInt(2));
+                                u.setInt(2,rs.getInt(1));
+                                u.executeUpdate();
+                            }
+                        }
+                    }try(PreparedStatement u=c.prepareStatement("UPDATE Reserva_Stock SET estado='Liberado' WHERE Cabeza_Factura_id_cabeza_factura=?")) {
                         u.setInt(1,ordenId);
                         u.executeUpdate();
                     }
-                    // Si la orden ya había sido aprobada (stock descontado) y ahora se rechaza/cancela,
-                    // se restaura el stock que sí se llegó a descontar.
-                    ajustarStockPorReservas(c,ordenId,"Confirmado",1,"Liberado");
                 }
                 registrarEstado(c,ordenId,estado,motivo==null?"Estado actualizado por administración.":motivo);
                 c.commit();
@@ -251,33 +239,6 @@ public class TiendaDAO {
             }finally {
                 c.setAutoCommit(true);
             }
-        }
-    }
-    /**
-     * Ajusta Producto.cantidad_stock por las reservas de una orden que estén en
-     * estadoOrigen (sumando cantidad*signo a cada producto) y las mueve a
-     * estadoDestino. signo=-1 descuenta stock (aprobación de pago), signo=+1 lo
-     * restaura (rechazo tras una aprobación previa).
-     */
-    private void ajustarStockPorReservas(Connection c,int ordenId,String estadoOrigen,int signo,String estadoDestino)throws SQLException {
-        try(PreparedStatement q=c.prepareStatement("SELECT Producto_id_producto,cantidad FROM Reserva_Stock WHERE Cabeza_Factura_id_cabeza_factura=? AND estado=?")) {
-            q.setInt(1,ordenId);
-            q.setString(2,estadoOrigen);
-            try(ResultSet rs=q.executeQuery()) {
-                while(rs.next()) {
-                    try(PreparedStatement u=c.prepareStatement("UPDATE Producto SET cantidad_stock=cantidad_stock+? WHERE id_producto=?")) {
-                        u.setInt(1,signo*rs.getInt(2));
-                        u.setInt(2,rs.getInt(1));
-                        u.executeUpdate();
-                    }
-                }
-            }
-        }
-        try(PreparedStatement u=c.prepareStatement("UPDATE Reserva_Stock SET estado=? WHERE Cabeza_Factura_id_cabeza_factura=? AND estado=?")) {
-            u.setString(1,estadoDestino);
-            u.setInt(2,ordenId);
-            u.setString(3,estadoOrigen);
-            u.executeUpdate();
         }
     }
     private void registrarEstado(Connection c,int orden,String estado,String detalle)throws SQLException {
