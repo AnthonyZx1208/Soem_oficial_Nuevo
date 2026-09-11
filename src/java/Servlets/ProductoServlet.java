@@ -5,7 +5,6 @@
 package Servlets;
 
 import Controlador.ProductoDAO;
-import Controlador.CarritoCompraDAO;
 import Modelo.Producto;
 import java.io.IOException;
 import jakarta.servlet.ServletException;

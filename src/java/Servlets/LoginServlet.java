@@ -33,17 +33,14 @@ public class LoginServlet extends HttpServlet {
             req.getRequestDispatcher("/vistas/login.jsp").forward(req,res);
             return;
         }
-        // Conservar el carrito del visitante al regenerar la sesión (protección
-        // contra fijación de sesión) para que no se pierda al iniciar sesión.
+        // Regenerar la sesión al iniciar sesión, como protección contra fijación de sesión.
         HttpSession antigua=req.getSession(false);
-        Object carritoInvitado=antigua==null?null:antigua.getAttribute("carrito");
         if(antigua!=null)antigua.invalidate();
         HttpSession s=req.getSession(true);
-        if(carritoInvitado!=null)s.setAttribute("carrito",carritoInvitado);
         s.setAttribute("usuarioId",u.getIdUsuario());
         s.setAttribute("usuarioNombre",u.getNombreUsuario());
         s.setAttribute("usuarioRol",u.getRolesIdRol());
         SeguridadAplicacion.csrf(s);
-        res.sendRedirect(req.getContextPath()+(modoAdmin?"/admin":"/home"));
+        res.sendRedirect(req.getContextPath()+(modoAdmin?"/admin/productos":"/home"));
     }
 }

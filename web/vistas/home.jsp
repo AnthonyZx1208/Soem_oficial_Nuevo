@@ -99,7 +99,7 @@ private String urlImagenCategoria(String ctx, String valor, String fallback) {
         <div class="container">
             <p class="eyebrow" style="color:#fff">Ofertas activas</p>
             <div class="oferta-pct">-<%=maxDescuento%>% OFF</div>
-            <p class="mb-0">En productos seleccionados. Paga por NEqui y asegura tu talla.</p>
+            <p class="mb-0">En productos seleccionados. Escríbenos por WhatsApp y asegura tu talla.</p>
         </div>
     </section>
 

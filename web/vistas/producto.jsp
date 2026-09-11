@@ -1,4 +1,4 @@
-<%@page contentType="text/html" pageEncoding="UTF-8"%><%@page import="Modelo.Producto,java.text.NumberFormat,java.util.Locale,Seguridad.Util"%><%Producto p=(Producto)request.getAttribute("producto");if(p==null){response.sendRedirect(request.getContextPath()+"/home");return;}String ctx=request.getContextPath();NumberFormat cop=NumberFormat.getCurrencyInstance(new Locale("es","CO"));double precio=p.getPrecio_oferta()==null?p.getPrecio_producto():p.getPrecio_oferta();int descuento=p.getPrecio_oferta()==null?0:(int)((p.getPrecio_producto()-p.getPrecio_oferta())*100/p.getPrecio_producto());%><!doctype html>
+<%@page contentType="text/html" pageEncoding="UTF-8"%><%@page import="Modelo.Producto,Modelo.ConfiguracionSitio,Controlador.ConfiguracionDAO,java.text.NumberFormat,java.util.Locale,Seguridad.Util"%><%Producto p=(Producto)request.getAttribute("producto");if(p==null){response.sendRedirect(request.getContextPath()+"/home");return;}String ctx=request.getContextPath();NumberFormat cop=NumberFormat.getCurrencyInstance(new Locale("es","CO"));double precio=p.getPrecio_oferta()==null?p.getPrecio_producto():p.getPrecio_oferta();int descuento=p.getPrecio_oferta()==null?0:(int)((p.getPrecio_producto()-p.getPrecio_oferta())*100/p.getPrecio_producto());String numeroWhatsapp=new ConfiguracionDAO().obtener().getContactoWhatsapp().replaceAll("\\D","");if(!numeroWhatsapp.startsWith("57"))numeroWhatsapp="57"+numeroWhatsapp;%><!doctype html>
 <html lang="es">
     <head>
         <meta charset="UTF-8">
@@ -16,45 +16,59 @@
             <img class="product-detail-image" src="<%=p.getImagen_principal()!=null&&p.getImagen_principal().startsWith("http")?p.getImagen_principal():ctx+"/"+p.getImagen_principal()%>" alt="<%=Util.escapeHtml(p.getNombre_producto())%>" onerror="this.onerror=null;this.src='<%=ctx%>/assets/sin-imagen.svg'"><%if(p.getCantidad_stock()==0){%><span class="badge badge-stockout position-absolute top-50 start-50 translate-middle p-3">SIN STOCK</span><%}%></div>
             <div class="col-lg-6">
                 <p class="eyebrow">SOEM Oficial</p>
-                <h1 class="display-6 fw-bold"><%=Util.escapeHtml(p.getNombre_producto())%></h1>
+                <h1 class="display-6 fw-bold" id="nombreProducto"><%=Util.escapeHtml(p.getNombre_producto())%></h1>
                 <p class="text-secondary"><%=Util.escapeHtml(p.getDescripcion())%></p>
-                <div class="price-panel mb-4"><%if(descuento>0){%><span class="old-price d-block"><%=cop.format(p.getPrecio_producto())%></span><%}%><span class="display-6 fw-bold"><%=cop.format(precio)%></span><%if(descuento>0){%><p class="text-success mb-0">Ahorras <%=cop.format(p.getPrecio_producto()-precio)%> (<%=descuento%>%)</p><%}%></div>
-                <p class="<%=p.getCantidad_stock()>0?"stock-ok":"stock-out"%>"><%=p.getCantidad_stock()>0?"Stock disponible: "+p.getCantidad_stock()+" unidades":"Este producto no tiene stock"%></p><%if(p.getCantidad_stock()>0){%><form method="post" action="<%=ctx%>/cart" class="row g-3">
-                <input type="hidden" name="csrf" value="<%=csrf%>">
-                <input type="hidden" name="action" value="add">
-                <input type="hidden" name="productoId" value="<%=p.getId_producto()%>">
+                <div class="price-panel mb-4"><%if(descuento>0){%><span class="old-price d-block"><%=cop.format(p.getPrecio_producto())%></span><%}%><span class="display-6 fw-bold" id="precioProducto"><%=cop.format(precio)%></span><%if(descuento>0){%><p class="text-success mb-0">Ahorras <%=cop.format(p.getPrecio_producto()-precio)%> (<%=descuento%>%)</p><%}%></div>
+                <p class="<%=p.getCantidad_stock()>0?"stock-ok":"stock-out"%>"><%=p.getCantidad_stock()>0?"Stock disponible: "+p.getCantidad_stock()+" unidades":"Este producto no tiene stock"%></p><%if(p.getCantidad_stock()>0){%><div class="row g-3">
                 <div class="col-md-4">
                     <label class="choice-label">Color</label>
-                    <select class="form-select" name="color">
-                        <option value="1">Negro</option>
-                        <option value="2">Blanco</option>
-                        <option value="3">Dorado</option>
+                    <select class="form-select" id="colorSel">
+                        <option value="Negro">Negro</option>
+                        <option value="Blanco">Blanco</option>
+                        <option value="Dorado">Dorado</option>
                     </select>
                 </div>
                 <div class="col-md-4">
                     <label class="choice-label">Talla</label>
-                    <select class="form-select" name="talla">
-                        <option value="2">S</option>
-                        <option value="3">M</option>
-                        <option value="4">L</option>
-                        <option value="5">XL</option>
+                    <select class="form-select" id="tallaSel">
+                        <option value="S">S</option>
+                        <option value="M">M</option>
+                        <option value="L">L</option>
+                        <option value="XL">XL</option>
                     </select>
                 </div>
                 <div class="col-md-4">
                     <label class="choice-label">Cantidad</label>
-                    <input class="form-control" type="number" name="cantidad" min="1" max="<%=p.getCantidad_stock()%>" value="1">
+                    <input class="form-control" type="number" id="cantidadSel" min="1" max="<%=p.getCantidad_stock()%>" value="1">
                 </div>
                 <div class="col-12">
-                    <button class="btn btn-dark w-100 py-3">Agregar al carrito</button>
+                    <a class="btn btn-dark w-100 py-3" id="btnComprarWhatsapp" href="#" target="_blank" rel="noopener noreferrer">💬 Comprar por WhatsApp</a>
                 </div>
-            </form><%}%><form method="post" action="<%=ctx%>/wishlist" class="mt-2">
+            </div>
+            <script>
+            (function(){
+                var telefono='<%=numeroWhatsapp%>';
+                var btn=document.getElementById('btnComprarWhatsapp');
+                var colorSel=document.getElementById('colorSel');
+                var tallaSel=document.getElementById('tallaSel');
+                var cantidadSel=document.getElementById('cantidadSel');
+                function actualizar(){
+                    var nombre=document.getElementById('nombreProducto').textContent.trim();
+                    var precio=document.getElementById('precioProducto').textContent.trim();
+                    var partes=['Hola, quiero comprar:',nombre,'Color: '+colorSel.value,'Talla: '+tallaSel.value,'Cantidad: '+cantidadSel.value,'Precio: '+precio];
+                    btn.href='https://wa.me/'+telefono+'?text='+encodeURIComponent(partes.join('\n'));
+                }
+                [colorSel,tallaSel,cantidadSel].forEach(function(el){ el.addEventListener('input',actualizar); });
+                actualizar();
+            })();
+            </script><%}%><form method="post" action="<%=ctx%>/wishlist" class="mt-2">
             <input type="hidden" name="csrf" value="<%=csrf%>">
             <input type="hidden" name="action" value="add">
             <input type="hidden" name="productoId" value="<%=p.getId_producto()%>">
-            <button class="btn btn-outline-dark w-100">♡ Guardar en lista de deseos</button>
+            <button class="btn btn-outline-dark w-100">♡ Guardar en favoritos</button>
         </form>
         <div class="notice mt-4">
-            <strong>Pago seguro por NEqui.</strong> El inventario se reserva al crear la orden y se confirma tras verificar el pago.</div>
+            <strong>Compra por WhatsApp.</strong> Escríbenos, te confirmamos disponibilidad y coordinamos el pago y el envío directamente.</div>
         </div>
     </div>
 </main><%@include file="footer.jsp"%></body>

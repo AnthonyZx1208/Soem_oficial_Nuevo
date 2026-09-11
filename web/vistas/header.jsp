@@ -1,19 +1,18 @@
 <%@ page contentType="text/html" pageEncoding="UTF-8" %>
-<%@ page import="java.util.List,java.util.Set,java.util.Collections,Modelo.CarritoCompra,Modelo.ConfiguracionSitio,Modelo.Categoria,Controlador.TiendaDAO,Controlador.ConfiguracionDAO,Controlador.CategoriaDAO,Controlador.PermisosDAO,Seguridad.SeguridadAplicacion,Seguridad.Util" %>
+<%@ page import="java.util.List,java.util.Set,java.util.Collections,Modelo.ConfiguracionSitio,Modelo.Categoria,Controlador.TiendaDAO,Controlador.ConfiguracionDAO,Controlador.CategoriaDAO,Controlador.PermisosDAO,Seguridad.SeguridadAplicacion,Seguridad.Util" %>
 <%
-HttpSession sesion=request.getSession(false); Integer usuarioId=sesion==null?null:(Integer)sesion.getAttribute("usuarioId"); Integer usuarioRol=sesion==null?null:(Integer)sesion.getAttribute("usuarioRol"); String usuarioNombre=sesion==null?null:(String)sesion.getAttribute("usuarioNombre"); int carrito=0; if(sesion!=null&&sesion.getAttribute("carrito") instanceof List) for(CarritoCompra item:(List<CarritoCompra>)sesion.getAttribute("carrito")) carrito+=item.getCantidad(); int deseos=usuarioId==null?0:new TiendaDAO().contarDeseos(usuarioId); String csrf=SeguridadAplicacion.csrf(request.getSession()); String appCtx=request.getContextPath(); ConfiguracionSitio identidad=new ConfiguracionDAO().obtener(); String nombreTienda=identidad.getNombreTienda()!=null?identidad.getNombreTienda().toUpperCase():"SOEM OFICIAL"; int espacio=nombreTienda.indexOf(' '); String marcaPrincipal=espacio<0?nombreTienda:nombreTienda.substring(0,espacio); String marcaResto=espacio<0?"":nombreTienda.substring(espacio+1);
+HttpSession sesion=request.getSession(false); Integer usuarioId=sesion==null?null:(Integer)sesion.getAttribute("usuarioId"); Integer usuarioRol=sesion==null?null:(Integer)sesion.getAttribute("usuarioRol"); String usuarioNombre=sesion==null?null:(String)sesion.getAttribute("usuarioNombre"); int deseos=usuarioId==null?0:new TiendaDAO().contarDeseos(usuarioId); String csrf=SeguridadAplicacion.csrf(request.getSession()); String appCtx=request.getContextPath(); ConfiguracionSitio identidad=new ConfiguracionDAO().obtener(); String nombreTienda=identidad.getNombreTienda()!=null?identidad.getNombreTienda().toUpperCase():"SOEM OFICIAL"; int espacio=nombreTienda.indexOf(' '); String marcaPrincipal=espacio<0?nombreTienda:nombreTienda.substring(0,espacio); String marcaResto=espacio<0?"":nombreTienda.substring(espacio+1);
 Set<String> misPermisos=usuarioRol==null?Collections.emptySet():new PermisosDAO().permisosDeRol(usuarioRol);
-boolean puedeCompras=misPermisos.contains("Procesar compras");
 boolean puedeCategorias=misPermisos.contains("Gestionar categorías");
 boolean puedeProductos=misPermisos.contains("Gestionar productos");
 boolean puedeIdentidad=misPermisos.contains("Gestionar configuración");
 boolean puedeUsuarios=misPermisos.contains("Gestionar usuarios");
-boolean esPersonalAdmin=puedeCompras||puedeCategorias||puedeProductos||puedeIdentidad||puedeUsuarios;
+boolean esPersonalAdmin=puedeCategorias||puedeProductos||puedeIdentidad||puedeUsuarios;
 List<Categoria> categoriasNav=new CategoriaDAO().listarCategorias();
 %>
 <div class="ticker"><div class="ticker-track">
-    <span>PAGO SEGURO POR NEQUI</span><span>ENVÍOS A TODA COLOMBIA</span><span>ATENCIÓN POR WHATSAPP <%=Util.escapeHtml(identidad.getContactoWhatsapp())%></span>
-    <span>PAGO SEGURO POR NEQUI</span><span>ENVÍOS A TODA COLOMBIA</span><span>ATENCIÓN POR WHATSAPP <%=Util.escapeHtml(identidad.getContactoWhatsapp())%></span>
+    <span>PEDIDOS POR WHATSAPP</span><span>ENVÍOS A TODA COLOMBIA</span><span>ATENCIÓN POR WHATSAPP <%=Util.escapeHtml(identidad.getContactoWhatsapp())%></span>
+    <span>PEDIDOS POR WHATSAPP</span><span>ENVÍOS A TODA COLOMBIA</span><span>ATENCIÓN POR WHATSAPP <%=Util.escapeHtml(identidad.getContactoWhatsapp())%></span>
 </div></div>
 <header class="site-header sticky-top">
     <nav class="navbar navbar-expand-lg navbar-light container py-3">
@@ -30,10 +29,8 @@ List<Categoria> categoriasNav=new CategoriaDAO().listarCategorias();
             </li><%}%></ul>
         <div class="d-flex align-items-center gap-2">
             <button class="icon-btn" type="button" aria-label="Buscar" onclick="document.getElementById('cajaBusqueda').classList.toggle('mostrar')">🔍</button>
-            <a class="header-action" href="<%=appCtx%>/wishlist" aria-label="Lista de deseos">♥<span><%=deseos%></span>
-        </a>
-        <a class="header-action" href="<%=appCtx%>/cart?action=view" aria-label="Carrito">🛍<span><%=carrito%></span>
-    </a><%if(usuarioId==null){%><a class="icon-btn" href="<%=appCtx%>/login" aria-label="Ingresar">👤</a><%}else{%><div class="dropdown">
+            <a class="header-action" href="<%=appCtx%>/wishlist" aria-label="Favoritos">♥<span><%=deseos%></span>
+        </a><%if(usuarioId==null){%><a class="icon-btn" href="<%=appCtx%>/login" aria-label="Ingresar">👤</a><%}else{%><div class="dropdown">
     <button class="icon-btn dropdown-toggle" data-bs-toggle="dropdown" aria-label="Mi cuenta">👤</button>
     <ul class="dropdown-menu dropdown-menu-end">
         <li>
@@ -41,15 +38,10 @@ List<Categoria> categoriasNav=new CategoriaDAO().listarCategorias();
         </li>
         <li>
             <a class="dropdown-item" href="<%=appCtx%>/profile">Mi perfil</a>
-        </li>
-        <li>
-            <a class="dropdown-item" href="<%=appCtx%>/orders">Mis compras</a>
         </li><%if(esPersonalAdmin){%><li>
             <hr class="dropdown-divider">
         </li><li>
             <h6 class="dropdown-header">Administración</h6>
-        </li><%}if(puedeCompras){%><li>
-            <a class="dropdown-item" href="<%=appCtx%>/admin">Órdenes</a>
         </li><%}if(puedeCategorias){%><li>
             <a class="dropdown-item" href="<%=appCtx%>/admin/categorias">Categorías</a>
         </li><%}if(puedeProductos){%><li>

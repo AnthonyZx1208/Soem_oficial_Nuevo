@@ -6,8 +6,8 @@
                 <p class="mb-0"><%=identidadFooter.getDescripcionTienda()!=null?Util.escapeHtml(identidadFooter.getDescripcionTienda()):"Moda seleccionada para hombres, mujeres, niñas y niños. Precios en pesos colombianos."%></p>
             </div>
             <div class="col-md-3">
-                <h6>Compra segura</h6>
-                <p class="mb-0">Pago por NEqui y verificación manual de cada orden.</p>
+                <h6>Compra por WhatsApp</h6>
+                <p class="mb-0">Escríbenos para confirmar disponibilidad, coordinar el pago y el envío.</p>
             </div>
             <div class="col-md-4">
                 <h6>Atención</h6>
