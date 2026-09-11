@@ -18,7 +18,7 @@ public class WishlistServlet extends HttpServlet {
     protected void doPost(HttpServletRequest req,HttpServletResponse res)throws ServletException,IOException {
         Integer id=(Integer)req.getSession().getAttribute("usuarioId");
         if(id==null) {
-            res.sendError(401);
+            res.sendRedirect(req.getContextPath()+"/login");
             return;
         }if(!SeguridadAplicacion.csrfValido(req)) {
             res.sendError(403);
