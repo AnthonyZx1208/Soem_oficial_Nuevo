@@ -14,6 +14,8 @@ public class CabecerasSeguridadFilter implements Filter {
     public void doFilter(jakarta.servlet.ServletRequest request, jakarta.servlet.ServletResponse response, FilterChain chain) throws IOException, ServletException {
         HttpServletResponse res = (HttpServletResponse) response;
         HttpServletRequest req = (HttpServletRequest) request;
+        req.setCharacterEncoding("UTF-8");
+        res.setCharacterEncoding("UTF-8");
         res.setHeader("X-Content-Type-Options", "nosniff");
         res.setHeader("X-Frame-Options", "DENY");
         res.setHeader("Referrer-Policy", "strict-origin-when-cross-origin");
