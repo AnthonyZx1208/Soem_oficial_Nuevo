@@ -9,10 +9,12 @@ import java.util.concurrent.ScheduledExecutorService;
 import java.util.concurrent.TimeUnit;
 
 /**
- * Libera cada hora el stock de órdenes cuya reserva de 7 días venció sin
+ * Libera cada 5 minutos el stock de órdenes cuya reserva de 1 hora venció sin
  * que un administrador la haya aprobado o rechazado. Reutiliza
  * TiendaDAO.actualizarEstado(), que ya restaura el stock reservado al
- * marcar una orden como "Rechazado" (Controlador.TiendaDAO).
+ * marcar una orden como "Rechazado" (Controlador.TiendaDAO). El barrido corre
+ * cada 5 minutos (no cada hora) para que una reserva de 1 hora no tarde casi
+ * el doble en liberarse en el peor caso.
  */
 @WebListener
 public class LiberacionStockListener implements ServletContextListener {
@@ -28,7 +30,7 @@ public class LiberacionStockListener implements ServletContextListener {
             t.setDaemon(true);
             return t;
         });
-        executor.scheduleAtFixedRate(this::liberarVencidas, 1, 1, TimeUnit.HOURS);
+        executor.scheduleAtFixedRate(this::liberarVencidas, 5, 5, TimeUnit.MINUTES);
     }
 
     @Override
