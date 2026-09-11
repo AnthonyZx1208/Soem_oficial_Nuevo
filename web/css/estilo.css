@@ -11,7 +11,8 @@
 .search-box.mostrar{display:block}
 .search-box input{max-width:600px;margin:0 auto}
 
-.hero-carousel .carousel-item{min-height:560px;display:flex;align-items:center;background-size:cover;background-position:center;position:relative}
+.hero-carousel .carousel-item{min-height:560px;background-size:cover;background-position:center;position:relative}
+.hero-carousel .carousel-item.active{display:flex;align-items:center}
 .hero-carousel .carousel-item:before{content:"";position:absolute;inset:0;background:linear-gradient(90deg,#000000cc,#00000030)}
 .hero-carousel .hero-caption{position:relative;z-index:1;color:#fff;padding:0 1rem}
 .hero-carousel .hero-caption h1{font-size:clamp(2.3rem,5.5vw,4.8rem);font-weight:800;max-width:680px;line-height:1.05}
