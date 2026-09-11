@@ -253,7 +253,7 @@ CREATE TABLE Configuracion_Sitio (
     favicon_url VARCHAR(500) NULL,
     color_primario CHAR(7) NOT NULL DEFAULT '#000000',
     color_secundario CHAR(7) NOT NULL DEFAULT '#FFFFFF',
-    color_acento CHAR(7) NOT NULL DEFAULT '#C9A24D',
+    color_acento CHAR(7) NOT NULL DEFAULT '#0A0A0A',
     contacto_whatsapp VARCHAR(20) NOT NULL DEFAULT '3150846431',
     contacto_email VARCHAR(150) NULL,
     descripcion_tienda TEXT NULL,

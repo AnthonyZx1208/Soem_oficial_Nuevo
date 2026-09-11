@@ -1,11 +1,11 @@
 <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 400 500">
-  <rect width="400" height="500" fill="#fbfaf7"/>
-  <rect x="1" y="1" width="398" height="498" fill="none" stroke="#e8e4dc" stroke-width="2"/>
-  <g fill="none" stroke="#c9a24d" stroke-width="3">
+  <rect width="400" height="500" fill="#f7f7f7"/>
+  <rect x="1" y="1" width="398" height="498" fill="none" stroke="#e2e2e2" stroke-width="2"/>
+  <g fill="none" stroke="#0a0a0a" stroke-width="3">
     <rect x="140" y="190" width="120" height="90" rx="4"/>
     <circle cx="170" cy="215" r="10"/>
     <path d="M140 265 l35-35 25 25 20-20 40 40"/>
   </g>
-  <text x="200" y="330" font-family="Arial, sans-serif" font-size="18" font-weight="700" fill="#111" text-anchor="middle" letter-spacing="1">SOEM OFICIAL</text>
-  <text x="200" y="354" font-family="Arial, sans-serif" font-size="13" fill="#6d6a65" text-anchor="middle">Imagen próximamente</text>
+  <text x="200" y="330" font-family="Arial, sans-serif" font-size="18" font-weight="700" fill="#0a0a0a" text-anchor="middle" letter-spacing="1">SOEM OFICIAL</text>
+  <text x="200" y="354" font-family="Arial, sans-serif" font-size="13" fill="#6b6b6b" text-anchor="middle">Imagen próximamente</text>
 </svg>

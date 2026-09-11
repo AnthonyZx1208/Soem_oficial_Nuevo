@@ -25,7 +25,7 @@
                 <input class="form-control form-control-color mb-3" type="color" name="colorSecundario" value="<%=config.getColorSecundario()%>">
             </div>
             <div class="col-md-4">
-                <label class="form-label">Color de acento (dorado)</label>
+                <label class="form-label">Color de acento</label>
                 <input class="form-control form-control-color mb-3" type="color" name="colorAcento" value="<%=config.getColorAcento()%>">
             </div>
         </div>
