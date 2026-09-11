@@ -1,4 +1,4 @@
-<%@page contentType="text/html" pageEncoding="UTF-8"%><%@page import="java.util.*,java.text.NumberFormat,Seguridad.Util"%><%String ctx=request.getContextPath();List<Map<String,Object>> deseos=(List<Map<String,Object>>)request.getAttribute("deseos");NumberFormat cop=NumberFormat.getCurrencyInstance(new Locale("es","CO"));%><!doctype html>
+<%@page contentType="text/html" pageEncoding="UTF-8"%><%@page import="java.util.*,java.text.NumberFormat,Seguridad.Util"%><%String ctx=request.getContextPath();List<Map<String,Object>> misDeseos=(List<Map<String,Object>>)request.getAttribute("deseos");NumberFormat cop=NumberFormat.getCurrencyInstance(new Locale("es","CO"));%><!doctype html>
 <html lang="es">
     <head>
         <meta charset="UTF-8">
@@ -10,7 +10,7 @@
     <body><%@include file="header.jsp"%><main class="container py-5">
     <p class="eyebrow">Guardados para ti</p>
     <h1 class="section-title">Lista de deseos</h1>
-    <div class="row g-4 mt-1"><%for(Map<String,Object> p:deseos){%><div class="col-sm-6 col-lg-4">
+    <div class="row g-4 mt-1"><%for(Map<String,Object> p:misDeseos){%><div class="col-sm-6 col-lg-4">
     <article class="product-card">
         <%String imagen=String.valueOf(p.get("imagen_principal"));%><img class="product-image" src="<%=imagen.startsWith("http")?imagen:ctx+"/"+imagen%>" alt="" onerror="this.onerror=null;this.src='<%=ctx%>/assets/sin-imagen.svg'">
         <div class="card-body">
@@ -27,6 +27,6 @@
             </div>
         </div>
     </article>
-</div><%}%><%if(deseos.isEmpty()){%><p>No has guardado productos aún.</p><%}%></div>
+</div><%}%><%if(misDeseos.isEmpty()){%><p>No has guardado productos aún.</p><%}%></div>
 </main><%@include file="footer.jsp"%></body>
 </html>
