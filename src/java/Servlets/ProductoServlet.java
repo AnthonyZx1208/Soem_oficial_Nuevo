@@ -5,6 +5,7 @@
 package Servlets;
 
 import Controlador.ProductoDAO;
+import Controlador.TiendaDAO;
 import Modelo.Producto;
 import java.io.IOException;
 import jakarta.servlet.ServletException;
@@ -38,7 +39,11 @@ public class ProductoServlet extends HttpServlet {
             
             if (producto != null) {
                 request.setAttribute("producto", producto);
-                
+                Integer usuarioId = (Integer) request.getSession().getAttribute("usuarioId");
+                if (usuarioId != null) {
+                    request.setAttribute("enFavoritos", new TiendaDAO().enDeseos(usuarioId, idProducto));
+                }
+
                 // Calcular descuento si existe
                 if (producto.getPrecio_oferta() != null && producto.getPrecio_oferta() > 0) {
                     double descuento = ((producto.getPrecio_producto() - producto.getPrecio_oferta()) / producto.getPrecio_producto()) * 100;

@@ -27,7 +27,9 @@ public class WishlistServlet extends HttpServlet {
         TiendaDAO dao=new TiendaDAO();
         if("remove".equals(req.getParameter("action")))dao.eliminarDeseo(id,p);
         else dao.agregarDeseo(id,p);
-        res.sendRedirect(req.getContextPath()+"/wishlist");
+        String redir=req.getParameter("redir");
+        String ctx=req.getContextPath();
+        res.sendRedirect(redir!=null&&redir.startsWith(ctx+"/")?redir:ctx+"/wishlist");
     }
     private int parse(String v) {
         try {

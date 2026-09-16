@@ -61,11 +61,12 @@
                 [colorSel,tallaSel,cantidadSel].forEach(function(el){ el.addEventListener('input',actualizar); });
                 actualizar();
             })();
-            </script><%}%><form method="post" action="<%=ctx%>/wishlist" class="mt-2">
+            </script><%}%><%boolean enFavoritos=Boolean.TRUE.equals(request.getAttribute("enFavoritos"));%><form method="post" action="<%=ctx%>/wishlist" class="mt-2">
             <input type="hidden" name="csrf" value="<%=csrf%>">
-            <input type="hidden" name="action" value="add">
+            <input type="hidden" name="action" value="<%=enFavoritos?"remove":"add"%>">
             <input type="hidden" name="productoId" value="<%=p.getId_producto()%>">
-            <button class="btn btn-outline-dark w-100">♡ Guardar en favoritos</button>
+            <input type="hidden" name="redir" value="<%=ctx%>/producto?id=<%=p.getId_producto()%>">
+            <button class="btn <%=enFavoritos?"btn-dark":"btn-outline-dark"%> w-100"><%=enFavoritos?"♥ Ya está en tus favoritos (quitar)":"♡ Guardar en favoritos"%></button>
         </form>
         <div class="notice mt-4">
             <strong>Compra por WhatsApp.</strong> Escríbenos, te confirmamos disponibilidad y coordinamos el pago y el envío directamente.</div>

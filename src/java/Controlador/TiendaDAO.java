@@ -17,6 +17,18 @@ public class TiendaDAO {
             return 0;
         }
     }
+    public boolean enDeseos(int usuarioId, int productoId) {
+        try(Connection c=conexion.getConn(); PreparedStatement ps=c.prepareStatement("SELECT 1 FROM Lista_Deseos WHERE Usuario_id_usuario=? AND Producto_id_producto=?")) {
+            if(c==null)return false;
+            ps.setInt(1,usuarioId);
+            ps.setInt(2,productoId);
+            try(ResultSet rs=ps.executeQuery()) {
+                return rs.next();
+            }
+        } catch(SQLException ex) {
+            return false;
+        }
+    }
     public boolean agregarDeseo(int usuarioId, int productoId) {
         String sql="INSERT IGNORE INTO Lista_Deseos (Usuario_id_usuario,Producto_id_producto) VALUES (?,?)";
         try(Connection c=conexion.getConn(); PreparedStatement ps=c.prepareStatement(sql)) {
