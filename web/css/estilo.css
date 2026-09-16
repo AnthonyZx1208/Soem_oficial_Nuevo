@@ -15,8 +15,9 @@ body{font-family:Inter,system-ui,-apple-system,"Segoe UI",sans-serif;background:
 .brand span,.text-gold{color:var(--gold)}
 .nav-link{font-size:.82rem;letter-spacing:.06em;text-transform:uppercase;color:var(--ink)!important}
 .header-action{color:var(--ink);text-decoration:none;position:relative;font-size:1.2rem;padding:.3rem}
-.header-action span{position:absolute;top:-.25rem;right:-.3rem;min-width:1rem;height:1rem;border-radius:1rem;background:var(--gold);color:#fff;font-size:.65rem;text-align:center;font-weight:800}
+.header-badge{position:absolute;top:-.25rem;right:-.3rem;min-width:1rem;height:1rem;border-radius:1rem;background:var(--gold);color:#fff;font-size:.65rem;text-align:center;font-weight:800;line-height:1rem}
 .icon-btn{background:none;border:0;color:var(--ink);font-size:1.15rem;padding:.3rem .4rem;cursor:pointer;line-height:1}
+.header-accion-label{display:none}
 .search-box{display:none;position:absolute;top:100%;left:0;right:0;background:#fff;border-bottom:1px solid var(--line);padding:1rem 0;box-shadow:0 8px 16px #0000000d;z-index:20}
 .search-box.mostrar{display:block}
 .search-box input{max-width:600px;margin:0 auto}
@@ -25,6 +26,16 @@ body{font-family:Inter,system-ui,-apple-system,"Segoe UI",sans-serif;background:
 .ticker{background:#fff;border-bottom:1px solid var(--line);padding:.5rem 0;text-align:center}
 .ticker-track span{display:inline-block;padding:0 1rem;font-size:.72rem;letter-spacing:.1em;text-transform:uppercase;font-weight:600;color:var(--muted)}
 .ticker-track span:not(:last-child){border-right:1px solid var(--line)}
+
+/* Menú colapsado (móvil/tablet): separa categorías de las acciones y les da aire */
+@media(max-width:991.98px){
+    .navbar-collapse{padding-top:1rem}
+    .navbar-nav{width:100%}
+    .navbar-nav .nav-link{padding:.75rem .25rem;border-bottom:1px solid var(--line)}
+    .header-iconos{width:100%;justify-content:space-around;margin-top:1rem;padding-top:1rem;border-top:1px solid var(--line);gap:0!important}
+    .header-iconos .icon-btn,.header-iconos .header-action,.header-iconos .dropdown{display:flex;flex-direction:column;align-items:center;gap:.25rem}
+    .header-accion-label{display:block;font-size:.68rem;letter-spacing:.04em;text-transform:uppercase;color:var(--muted)}
+}
 
 /* Botones y etiquetas */
 .btn-gold{background:var(--gold);border-color:var(--gold);color:#fff;font-weight:700}

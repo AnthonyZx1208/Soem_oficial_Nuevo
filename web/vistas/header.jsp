@@ -12,7 +12,6 @@ List<Categoria> categoriasNav=new CategoriaDAO().listarCategorias();
 %>
 <div class="ticker"><div class="ticker-track">
     <span>PEDIDOS POR WHATSAPP</span><span>ENVÍOS A TODA COLOMBIA</span><span>ATENCIÓN POR WHATSAPP <%=Util.escapeHtml(identidad.getContactoWhatsapp())%></span>
-    <span>PEDIDOS POR WHATSAPP</span><span>ENVÍOS A TODA COLOMBIA</span><span>ATENCIÓN POR WHATSAPP <%=Util.escapeHtml(identidad.getContactoWhatsapp())%></span>
 </div></div>
 <header class="site-header sticky-top">
     <nav class="navbar navbar-expand-lg navbar-light container py-3">
@@ -27,11 +26,11 @@ List<Categoria> categoriasNav=new CategoriaDAO().listarCategorias();
             <li class="nav-item">
                 <a class="nav-link" href="<%=appCtx%>/categoria?id=<%=c.getId_categoria()%>"><%=Util.escapeHtml(c.getNombre_categoria())%></a>
             </li><%}%></ul>
-        <div class="d-flex align-items-center gap-2">
-            <button class="icon-btn" type="button" aria-label="Buscar" onclick="document.getElementById('cajaBusqueda').classList.toggle('mostrar')">🔍</button>
-            <a class="header-action" href="<%=appCtx%>/wishlist" aria-label="Favoritos">♥<span><%=deseos%></span>
-        </a><%if(usuarioId==null){%><a class="icon-btn" href="<%=appCtx%>/login" aria-label="Ingresar">👤</a><%}else{%><div class="dropdown">
-    <button class="icon-btn dropdown-toggle" data-bs-toggle="dropdown" aria-label="Mi cuenta">👤</button>
+        <div class="d-flex align-items-center gap-2 header-iconos">
+            <button class="icon-btn" type="button" aria-label="Buscar" onclick="document.getElementById('cajaBusqueda').classList.toggle('mostrar')">🔍<span class="header-accion-label">Buscar</span></button>
+            <a class="header-action" href="<%=appCtx%>/wishlist" aria-label="Favoritos">♥<span class="header-badge"><%=deseos%></span><span class="header-accion-label">Favoritos</span>
+        </a><%if(usuarioId==null){%><a class="icon-btn" href="<%=appCtx%>/login" aria-label="Ingresar">👤<span class="header-accion-label">Ingresar</span></a><%}else{%><div class="dropdown">
+    <button class="icon-btn dropdown-toggle" data-bs-toggle="dropdown" aria-label="Mi cuenta">👤<span class="header-accion-label">Cuenta</span></button>
     <ul class="dropdown-menu dropdown-menu-end">
         <li>
             <h6 class="dropdown-header"><%=Util.escapeHtml(usuarioNombre)%></h6>
