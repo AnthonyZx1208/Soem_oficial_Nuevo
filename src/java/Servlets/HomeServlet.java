@@ -8,6 +8,7 @@ import Controlador.ProductoDAO;
 import Controlador.CategoriaDAO;
 import Modelo.Producto;
 import Modelo.Categoria;
+import Seguridad.Util;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
@@ -38,7 +39,7 @@ public class HomeServlet extends HttpServlet {
         List<Producto> productosDestacados = productoDAO.listarProductosPorEstado("Activo");
         request.setAttribute("productosDestacados", productosDestacados);
 
-        String termino = request.getParameter("q");
+        String termino = Util.parametroUtf8(request, "q");
         if (termino != null && !termino.isBlank()) {
             String buscado = termino.trim().toLowerCase();
             List<Producto> resultados = new ArrayList<>();

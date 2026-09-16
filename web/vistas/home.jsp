@@ -3,7 +3,7 @@ String ctx=request.getContextPath();
 NumberFormat cop=NumberFormat.getCurrencyInstance(new Locale("es","CO"));
 List<Categoria> categorias=(List<Categoria>)request.getAttribute("categorias");
 List<Producto> resultadosBusqueda=(List<Producto>)request.getAttribute("resultadosBusqueda");
-String termino=request.getParameter("q");
+String termino=Util.parametroUtf8(request,"q");
 Categoria catHombres=null,catMujeres=null,catNinas=null,catNinos=null;
 for(Categoria c:categorias){
     String n=c.getNombre_categoria()==null?"":c.getNombre_categoria().toLowerCase();

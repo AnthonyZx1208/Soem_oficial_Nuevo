@@ -1,8 +1,32 @@
 package Seguridad;
 
+import jakarta.servlet.http.HttpServletRequest;
+import java.net.URLDecoder;
+import java.nio.charset.StandardCharsets;
+
 public final class Util {
 
     private Util() { }
+
+    /**
+     * Lee un parámetro directamente de la query string y lo decodifica como UTF-8,
+     * sin pasar por request.getParameter(...): ese método usa la codificación por
+     * defecto del contenedor para los parámetros de un GET (a veces ISO-8859-1),
+     * lo que rompe tildes y ñ en búsquedas sin importar cómo se configure el filtro
+     * de la aplicación (que solo afecta el body de un POST).
+     */
+    public static String parametroUtf8(HttpServletRequest request, String nombre) {
+        String query = request.getQueryString();
+        if (query == null) return null;
+        for (String par : query.split("&")) {
+            int igual = par.indexOf('=');
+            String clave = URLDecoder.decode(igual < 0 ? par : par.substring(0, igual), StandardCharsets.UTF_8);
+            if (nombre.equals(clave)) {
+                return igual < 0 ? "" : URLDecoder.decode(par.substring(igual + 1), StandardCharsets.UTF_8);
+            }
+        }
+        return null;
+    }
 
     public static String escapeHtml(String s) {
         if (s == null) return "";

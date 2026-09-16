@@ -62,7 +62,7 @@ List<Categoria> categoriasNav=new CategoriaDAO().listarCategorias();
 </nav>
 <div class="search-box" id="cajaBusqueda">
     <form class="container d-flex" method="get" action="<%=appCtx%>/home">
-        <input class="form-control" type="search" name="q" placeholder="Buscar productos..." value="<%=Util.escapeHtml(request.getParameter("q"))%>" autofocus>
+        <input class="form-control" type="search" name="q" placeholder="Buscar productos..." value="<%=Util.escapeHtml(Util.parametroUtf8(request,"q"))%>" autofocus>
     </form>
 </div>
 </header>
