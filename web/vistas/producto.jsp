@@ -23,7 +23,7 @@
                 <h1 class="display-6 fw-bold" id="nombreProducto"><%=Util.escapeHtml(p.getNombre_producto())%></h1>
                 <p class="text-secondary"><%=Util.escapeHtml(p.getDescripcion())%></p>
                 <div class="price-panel mb-4"><%if(descuento>0){%><span class="old-price d-block"><%=cop.format(p.getPrecio_producto())%></span><%}%><span class="display-6 fw-bold" id="precioProducto"><%=cop.format(precio)%></span><%if(descuento>0){%><p class="text-success mb-0">Ahorras <%=cop.format(p.getPrecio_producto()-precio)%> (<%=descuento%>%)</p><%}%></div>
-                <p class="<%=p.getCantidad_stock()>0?"stock-ok":"stock-out"%>"><%=p.getCantidad_stock()>0?"Stock disponible: "+p.getCantidad_stock()+" unidades":"Este producto no tiene stock"%></p><%if(p.getCantidad_stock()>0){%><div class="row g-3">
+                <p class="<%=p.getCantidad_stock()>0?"stock-ok":"stock-out"%>"><%=p.getCantidad_stock()>0?"Stock disponible: "+p.getCantidad_stock()+" unidades":"Este producto no tiene stock"%></p><%if(p.getCantidad_stock()>0){%><div class="row g-3 opciones-compra">
                 <div class="col-md-4">
                     <label class="choice-label">Color</label>
                     <select class="form-select" id="colorSel">
@@ -43,8 +43,9 @@
                     </select>
                 </div>
                 <div class="col-md-4">
-                    <label class="choice-label">Cantidad (disponibles: <%=p.getCantidad_stock()%>)</label>
+                    <label class="choice-label">Cantidad</label>
                     <input class="form-control" type="number" id="cantidadSel" min="1" max="<%=p.getCantidad_stock()%>" value="1">
+                    <small class="choice-help"><%=p.getCantidad_stock()%> disponibles</small>
                 </div>
                 <div class="col-12">
                     <a class="btn btn-dark w-100 py-3" id="btnComprarWhatsapp" href="#" target="_blank" rel="noopener noreferrer">💬 Comprar por WhatsApp</a>
