@@ -48,9 +48,14 @@ body{font-family:Inter,system-ui,-apple-system,"Segoe UI",sans-serif;background:
 .breadcrumb-soem a{color:var(--muted);text-decoration:none}
 
 /* Ficha de producto */
-.product-detail-image{width:100%;min-height:430px;object-fit:cover}
+.product-detail-image{width:100%;min-height:430px;object-fit:cover;cursor:zoom-in}
 .price-panel{background:#fff;border-left:4px solid var(--gold);padding:1.3rem}
 .choice-label{font-size:.8rem;font-weight:800;text-transform:uppercase;letter-spacing:.1em}
+
+.lightbox{display:none;position:fixed;inset:0;background:#000000ee;z-index:1050;align-items:center;justify-content:center;padding:2.5rem}
+.lightbox.mostrar{display:flex}
+.lightbox img{max-width:100%;max-height:100%;object-fit:contain}
+.lightbox-cerrar{position:absolute;top:1rem;right:1.25rem;background:none;border:0;color:#fff;font-size:2.4rem;line-height:1;cursor:pointer}
 
 /* Footer (fondo oscuro: los títulos van en blanco, no en el acento) */
 .footer{background:var(--ink);color:#d0d0d0}

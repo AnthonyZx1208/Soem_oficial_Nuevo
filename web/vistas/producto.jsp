@@ -13,7 +13,11 @@
     </nav>
     <div class="row g-5">
         <div class="col-lg-6 position-relative">
-            <img class="product-detail-image" src="<%=p.getImagen_principal()!=null&&p.getImagen_principal().startsWith("http")?p.getImagen_principal():ctx+"/"+p.getImagen_principal()%>" alt="<%=Util.escapeHtml(p.getNombre_producto())%>" onerror="this.onerror=null;this.src='<%=ctx%>/assets/sin-imagen.svg'"><%if(p.getCantidad_stock()==0){%><span class="badge badge-stockout position-absolute top-50 start-50 translate-middle p-3">SIN STOCK</span><%}%></div>
+            <img class="product-detail-image" id="imgProducto" src="<%=p.getImagen_principal()!=null&&p.getImagen_principal().startsWith("http")?p.getImagen_principal():ctx+"/"+p.getImagen_principal()%>" alt="<%=Util.escapeHtml(p.getNombre_producto())%>" onerror="this.onerror=null;this.src='<%=ctx%>/assets/sin-imagen.svg'"><%if(p.getCantidad_stock()==0){%><span class="badge badge-stockout position-absolute top-50 start-50 translate-middle p-3">SIN STOCK</span><%}%></div>
+        <div class="lightbox" id="lightbox">
+            <button class="lightbox-cerrar" id="lightboxCerrar" type="button" aria-label="Cerrar">×</button>
+            <img id="lightboxImg" src="" alt="">
+        </div>
             <div class="col-lg-6">
                 <p class="eyebrow">SOEM Oficial</p>
                 <h1 class="display-6 fw-bold" id="nombreProducto"><%=Util.escapeHtml(p.getNombre_producto())%></h1>
@@ -73,5 +77,25 @@
             <strong>Compra por WhatsApp.</strong> Escríbenos, te confirmamos disponibilidad y coordinamos el pago y el envío directamente.</div>
         </div>
     </div>
-</main><%@include file="footer.jsp"%></body>
+</main><script>
+(function(){
+    var img=document.getElementById('imgProducto');
+    var lightbox=document.getElementById('lightbox');
+    var lightboxImg=document.getElementById('lightboxImg');
+    function abrir(){
+        lightboxImg.src=img.src;
+        lightboxImg.alt=img.alt;
+        lightbox.classList.add('mostrar');
+        document.body.style.overflow='hidden';
+    }
+    function cerrar(){
+        lightbox.classList.remove('mostrar');
+        document.body.style.overflow='';
+    }
+    img.addEventListener('click',abrir);
+    lightbox.addEventListener('click',function(e){ if(e.target===lightbox) cerrar(); });
+    document.getElementById('lightboxCerrar').addEventListener('click',cerrar);
+    document.addEventListener('keydown',function(e){ if(e.key==='Escape') cerrar(); });
+})();
+</script><%@include file="footer.jsp"%></body>
 </html>
