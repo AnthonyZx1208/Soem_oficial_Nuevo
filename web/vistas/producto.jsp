@@ -38,7 +38,7 @@
                     </select>
                 </div>
                 <div class="col-md-4">
-                    <label class="choice-label">Cantidad</label>
+                    <label class="choice-label">Cantidad (disponibles: <%=p.getCantidad_stock()%>)</label>
                     <input class="form-control" type="number" id="cantidadSel" min="1" max="<%=p.getCantidad_stock()%>" value="1">
                 </div>
                 <div class="col-12">
