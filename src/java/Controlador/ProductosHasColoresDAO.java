@@ -1,6 +1,7 @@
 package Controlador;
 
 import Modelo.ProductosHasColores;
+import Modelo.Talla;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
@@ -61,6 +62,31 @@ public class ProductosHasColoresDAO {
             }
         } catch (SQLException e) {
             System.out.println("Error al listar variantes del producto: " + e.getMessage());
+        }
+        return lista;
+    }
+
+    /** Tallas con stock configurado para este producto, para mostrar solo las suyas en la ficha. */
+    public List<Talla> tallasDisponibles(int idProducto) {
+        List<Talla> lista = new ArrayList<>();
+        String sql = "SELECT DISTINCT t.id_talla, t.nombre_talla FROM Productos_Has_Colores v "
+                + "JOIN Talla t ON t.id_talla = v.Talla_id_talla "
+                + "WHERE v.Producto_id_producto = ? AND v.cantidad_disponible > 0 ORDER BY t.id_talla";
+        try (Connection conn = conect.getConn()) {
+            if (conn == null) return lista;
+            try (PreparedStatement ps = conn.prepareStatement(sql)) {
+                ps.setInt(1, idProducto);
+                try (ResultSet rs = ps.executeQuery()) {
+                    while (rs.next()) {
+                        Talla t = new Talla();
+                        t.setIdTalla(rs.getInt("id_talla"));
+                        t.setNombreTalla(rs.getString("nombre_talla"));
+                        lista.add(t);
+                    }
+                }
+            }
+        } catch (SQLException e) {
+            System.out.println("Error al listar tallas disponibles del producto: " + e.getMessage());
         }
         return lista;
     }

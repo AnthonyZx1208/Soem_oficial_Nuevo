@@ -1,4 +1,4 @@
-<%@page contentType="text/html" pageEncoding="UTF-8"%><%@page import="Modelo.Producto,Modelo.ConfiguracionSitio,Controlador.ConfiguracionDAO,java.text.NumberFormat,java.util.Locale,Seguridad.Util"%><%Producto p=(Producto)request.getAttribute("producto");if(p==null){response.sendRedirect(request.getContextPath()+"/home");return;}String ctx=request.getContextPath();NumberFormat cop=NumberFormat.getCurrencyInstance(new Locale("es","CO"));double precio=p.getPrecio_oferta()==null?p.getPrecio_producto():p.getPrecio_oferta();int descuento=p.getPrecio_oferta()==null?0:(int)((p.getPrecio_producto()-p.getPrecio_oferta())*100/p.getPrecio_producto());String numeroWhatsapp=new ConfiguracionDAO().obtener().getContactoWhatsapp().replaceAll("\\D","");if(!numeroWhatsapp.startsWith("57"))numeroWhatsapp="57"+numeroWhatsapp;%><!doctype html>
+<%@page contentType="text/html" pageEncoding="UTF-8"%><%@page import="Modelo.Producto,Modelo.ConfiguracionSitio,Modelo.Talla,Controlador.ConfiguracionDAO,java.text.NumberFormat,java.util.List,java.util.Locale,Seguridad.Util"%><%Producto p=(Producto)request.getAttribute("producto");if(p==null){response.sendRedirect(request.getContextPath()+"/home");return;}String ctx=request.getContextPath();NumberFormat cop=NumberFormat.getCurrencyInstance(new Locale("es","CO"));double precio=p.getPrecio_oferta()==null?p.getPrecio_producto():p.getPrecio_oferta();int descuento=p.getPrecio_oferta()==null?0:(int)((p.getPrecio_producto()-p.getPrecio_oferta())*100/p.getPrecio_producto());String numeroWhatsapp=new ConfiguracionDAO().obtener().getContactoWhatsapp().replaceAll("\\D","");if(!numeroWhatsapp.startsWith("57"))numeroWhatsapp="57"+numeroWhatsapp;List<Talla> tallasProducto=(List<Talla>)request.getAttribute("tallasProducto");%><!doctype html>
 <html lang="es">
     <head>
         <meta charset="UTF-8">
@@ -30,11 +30,12 @@
                 </div>
                 <div class="col-md-4">
                     <label class="choice-label">Talla</label>
-                    <select class="form-select" id="tallaSel">
+                    <select class="form-select" id="tallaSel"><%if(tallasProducto==null||tallasProducto.isEmpty()){%>
                         <option value="S">S</option>
                         <option value="M">M</option>
                         <option value="L">L</option>
-                        <option value="XL">XL</option>
+                        <option value="XL">XL</option><%}else{for(Talla t:tallasProducto){%>
+                        <option value="<%=Util.escapeHtml(t.getNombreTalla())%>"><%=Util.escapeHtml(t.getNombreTalla())%></option><%}}%>
                     </select>
                 </div>
                 <div class="col-md-4">

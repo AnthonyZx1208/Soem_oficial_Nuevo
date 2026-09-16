@@ -5,6 +5,7 @@
 package Servlets;
 
 import Controlador.ProductoDAO;
+import Controlador.ProductosHasColoresDAO;
 import Controlador.TiendaDAO;
 import Modelo.Producto;
 import java.io.IOException;
@@ -39,6 +40,7 @@ public class ProductoServlet extends HttpServlet {
             
             if (producto != null) {
                 request.setAttribute("producto", producto);
+                request.setAttribute("tallasProducto", new ProductosHasColoresDAO().tallasDisponibles(idProducto));
                 Integer usuarioId = (Integer) request.getSession().getAttribute("usuarioId");
                 if (usuarioId != null) {
                     request.setAttribute("enFavoritos", new TiendaDAO().enDeseos(usuarioId, idProducto));
