@@ -7,6 +7,7 @@ import Controlador.ProductosHasColoresDAO;
 import Controlador.TallaDAO;
 import Modelo.Producto;
 import Modelo.ProductosHasColores;
+import Modelo.Talla;
 import Seguridad.SeguridadAplicacion;
 import java.io.File;
 import java.io.IOException;
@@ -122,15 +123,27 @@ public class AdminProductoServlet extends HttpServlet {
                             : "No fue posible eliminar: probablemente tiene compras o variantes asociadas.");
                     break;
                 }
-                case "guardarVariante": {
-                    ProductosHasColores v = new ProductosHasColores();
-                    v.setProductoIdProducto(Integer.parseInt(req.getParameter("productoId")));
-                    v.setColoresIdColor(Integer.parseInt(req.getParameter("colorId")));
-                    v.setTallaIdTalla(Integer.parseInt(req.getParameter("tallaId")));
-                    v.setCantidadDisponible(Math.max(0, Integer.parseInt(req.getParameter("cantidad"))));
-                    boolean ok = new ProductosHasColoresDAO().guardarVariante(v);
-                    req.setAttribute(ok ? "exito" : "error", ok ? "Variante guardada." : "No fue posible guardar la variante.");
-                    req.setAttribute("volverEditar", v.getProductoIdProducto());
+                case "guardarVariantes": {
+                    int productoId = Integer.parseInt(req.getParameter("productoId"));
+                    int colorId = Integer.parseInt(req.getParameter("colorId"));
+                    ProductosHasColoresDAO variantesDAO = new ProductosHasColoresDAO();
+                    int conStock = 0;
+                    for (Talla t : new TallaDAO().listarTallas()) {
+                        int cantidad = Math.max(0, parseIntSilencioso(req.getParameter("cantidad_" + t.getIdTalla())));
+                        if (cantidad > 0) {
+                            ProductosHasColores v = new ProductosHasColores();
+                            v.setProductoIdProducto(productoId);
+                            v.setColoresIdColor(colorId);
+                            v.setTallaIdTalla(t.getIdTalla());
+                            v.setCantidadDisponible(cantidad);
+                            variantesDAO.guardarVariante(v);
+                            conStock++;
+                        } else {
+                            variantesDAO.eliminarVariante(productoId, colorId, t.getIdTalla());
+                        }
+                    }
+                    req.setAttribute("exito", "Tallas guardadas para ese color (" + conStock + " con stock).");
+                    req.setAttribute("volverEditar", productoId);
                     break;
                 }
                 case "eliminarVariante": {
@@ -233,6 +246,14 @@ public class AdminProductoServlet extends HttpServlet {
             return Float.parseFloat(v);
         } catch (NumberFormatException | NullPointerException ex) {
             throw new IllegalArgumentException(mensajeError);
+        }
+    }
+
+    private int parseIntSilencioso(String v) {
+        try {
+            return v == null || v.isBlank() ? 0 : Integer.parseInt(v.trim());
+        } catch (NumberFormatException ex) {
+            return 0;
         }
     }
 

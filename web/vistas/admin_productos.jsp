@@ -121,22 +121,57 @@ NumberFormat cop=NumberFormat.getCurrencyInstance(new Locale("es","CO"));
     <h2 class="h5 mt-5 mb-3">Variantes (talla / color / stock) de "<%=Util.escapeHtml(editando.getNombre_producto())%>"</h2>
     <div class="row g-4">
         <div class="col-lg-5">
-            <form class="bg-white p-4" method="post" action="<%=ctx%>/admin/productos">
+            <form class="bg-white p-4" method="post" action="<%=ctx%>/admin/productos" id="formVariantes">
                 <input type="hidden" name="csrf" value="<%=csrf%>">
-                <input type="hidden" name="action" value="guardarVariante">
+                <input type="hidden" name="action" value="guardarVariantes">
                 <input type="hidden" name="productoId" value="<%=editando.getId_producto()%>">
                 <label class="form-label">Color</label>
-                <select class="form-select mb-3" name="colorId" required><%for(Colores co:colores){%>
+                <select class="form-select mb-3" id="colorSelVariante" name="colorId" required><%for(Colores co:colores){%>
                     <option value="<%=co.getIdColor()%>"><%=Util.escapeHtml(co.getNombreColor())%></option><%}%>
                 </select>
-                <label class="form-label">Talla</label>
-                <select class="form-select mb-3" name="tallaId" required><%for(Talla t:tallas){%>
-                    <option value="<%=t.getIdTalla()%>"><%=Util.escapeHtml(t.getNombreTalla())%></option><%}%>
-                </select>
-                <label class="form-label">Cantidad disponible</label>
-                <input class="form-control mb-4" type="number" min="0" name="cantidad" required value="0">
-                <button class="btn btn-dark">Guardar variante</button>
+                <label class="form-label">Tallas de este producto</label>
+                <p class="text-secondary small mb-2">Pon la cantidad disponible en cada talla que este producto maneja; deja en 0 las que no aplican.</p><%for(Talla t:tallas){%>
+                <div class="input-group mb-2">
+                    <span class="input-group-text" style="width:4.5rem"><%=Util.escapeHtml(t.getNombreTalla())%></span>
+                    <input class="form-control cantidad-talla" type="number" min="0" data-talla="<%=t.getIdTalla()%>" name="cantidad_<%=t.getIdTalla()%>" value="0">
+                </div><%}%>
+                <button class="btn btn-dark mt-2">Guardar tallas</button>
             </form>
+            <script>
+            (function(){
+                var variantesPorColor=<%
+                    Map<Integer,Map<Integer,Integer>> porColor=new LinkedHashMap<>();
+                    for(ProductosHasColores v:variantes){
+                        porColor.computeIfAbsent(v.getColoresIdColor(),k->new LinkedHashMap<>()).put(v.getTallaIdTalla(),v.getCantidadDisponible());
+                    }
+                    StringBuilder json=new StringBuilder("{");
+                    boolean primero=true;
+                    for(Map.Entry<Integer,Map<Integer,Integer>> e:porColor.entrySet()){
+                        if(!primero)json.append(",");
+                        primero=false;
+                        json.append("\"").append(e.getKey()).append("\":{");
+                        boolean primeroTalla=true;
+                        for(Map.Entry<Integer,Integer> t:e.getValue().entrySet()){
+                            if(!primeroTalla)json.append(",");
+                            primeroTalla=false;
+                            json.append("\"").append(t.getKey()).append("\":").append(t.getValue());
+                        }
+                        json.append("}");
+                    }
+                    json.append("}");
+                %><%=json%>;
+                var colorSel=document.getElementById('colorSelVariante');
+                var inputs=document.querySelectorAll('.cantidad-talla');
+                function cargar(){
+                    var deEsteColor=variantesPorColor[colorSel.value]||{};
+                    inputs.forEach(function(inp){
+                        inp.value=deEsteColor[inp.getAttribute('data-talla')]||0;
+                    });
+                }
+                colorSel.addEventListener('change',cargar);
+                cargar();
+            })();
+            </script>
         </div>
         <div class="col-lg-7">
             <div class="table-responsive bg-white p-3">
