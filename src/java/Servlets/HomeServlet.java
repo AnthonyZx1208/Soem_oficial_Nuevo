@@ -41,10 +41,10 @@ public class HomeServlet extends HttpServlet {
 
         String termino = Util.parametroUtf8(request, "q");
         if (termino != null && !termino.isBlank()) {
-            String buscado = termino.trim().toLowerCase();
+            String buscado = Util.normalizarBusqueda(termino.trim());
             List<Producto> resultados = new ArrayList<>();
             for (Producto p : productosDestacados) {
-                if (p.getNombre_producto() != null && p.getNombre_producto().toLowerCase().contains(buscado)) {
+                if (p.getNombre_producto() != null && Util.normalizarBusqueda(p.getNombre_producto()).contains(buscado)) {
                     resultados.add(p);
                 }
             }

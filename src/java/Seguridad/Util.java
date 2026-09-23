@@ -3,6 +3,7 @@ package Seguridad;
 import jakarta.servlet.http.HttpServletRequest;
 import java.net.URLDecoder;
 import java.nio.charset.StandardCharsets;
+import java.text.Normalizer;
 
 public final class Util {
 
@@ -26,6 +27,13 @@ public final class Util {
             }
         }
         return null;
+    }
+
+    /** Pasa a minúsculas y quita tildes/diéresis, para comparar texto sin importar acentos ("pantalon" == "Pantalón"). */
+    public static String normalizarBusqueda(String s) {
+        if (s == null) return "";
+        String sinTildes = Normalizer.normalize(s.toLowerCase(), Normalizer.Form.NFD).replaceAll("\\p{InCombiningDiacriticalMarks}+", "");
+        return sinTildes;
     }
 
     public static String escapeHtml(String s) {
