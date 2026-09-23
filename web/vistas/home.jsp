@@ -145,5 +145,26 @@ private String urlImagenCategoria(String ctx, String valor, String fallback) {
         <p class="text-secondary mb-4">Etiquétanos con tus looks favoritos.</p>
         <div class="social-strip"><%for(Producto p:tira){%><a href="<%=ctx%>/producto?id=<%=p.getId_producto()%>"><img src="<%=p.getImagen_principal()!=null&&p.getImagen_principal().startsWith("http")?p.getImagen_principal():ctx+"/"+p.getImagen_principal()%>" alt="<%=Util.escapeHtml(p.getNombre_producto())%>" onerror="this.onerror=null;this.src='<%=ctx%>/assets/sin-imagen.svg'"></a><%}%></div>
     </section><%}}%>
-</main><%@include file="footer.jsp"%></body>
+</main><script>
+(function(){
+    document.querySelectorAll('.carrusel-horizontal').forEach(function(pista){
+        var intervalo;
+        function avanzar(){
+            var maxScroll=pista.scrollWidth-pista.clientWidth;
+            if(pista.scrollLeft>=maxScroll-5){ pista.scrollTo({left:0,behavior:'smooth'}); }
+            else{ pista.scrollBy({left:260,behavior:'smooth'}); }
+        }
+        function iniciar(){
+            detener();
+            if(pista.scrollWidth>pista.clientWidth) intervalo=setInterval(avanzar,3500);
+        }
+        function detener(){ clearInterval(intervalo); }
+        pista.addEventListener('mouseenter',detener);
+        pista.addEventListener('mouseleave',iniciar);
+        pista.addEventListener('touchstart',detener,{passive:true});
+        pista.addEventListener('touchend',function(){ detener(); setTimeout(iniciar,4000); });
+        iniciar();
+    });
+})();
+</script><%@include file="footer.jsp"%></body>
 </html>
