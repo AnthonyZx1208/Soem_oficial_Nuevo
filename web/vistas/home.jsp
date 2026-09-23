@@ -65,13 +65,7 @@ private String urlImagenCategoria(String ctx, String valor, String fallback) {
                         <a class="btn btn-gold btn-lg px-4 me-2" href="<%=ctx%>/categoria?id=<%=catHombres.getId_categoria()%>">Ver hombres</a><%if(catMujeres!=null){%><a class="btn btn-outline-light btn-lg px-4" href="<%=ctx%>/categoria?id=<%=catMujeres.getId_categoria()%>">Ver mujeres</a><%}%>
                     </div>
                 </div><%}%>
-            </div><%if(catMujeres!=null&&catHombres!=null){%>
-            <button class="carousel-control-prev" type="button" data-bs-target="#heroCarrusel" data-bs-slide="prev">
-                <span class="carousel-control-prev-icon"></span>
-            </button>
-            <button class="carousel-control-next" type="button" data-bs-target="#heroCarrusel" data-bs-slide="next">
-                <span class="carousel-control-next-icon"></span>
-            </button><%}%>
+            </div>
         </div>
     </section><%}%>
 
