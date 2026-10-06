@@ -14,4 +14,6 @@ Configure these variables in Railway (all uppercase):
 
 Optionally set `SOEM_DB_URL` with a complete JDBC URL. It takes precedence over the individual values.
 
-`Dockerfile` deploys the compiled WAR. After changing Java or JSP files, run `Clean and Build` before pushing the project to Railway.
+`Dockerfile` is a two-stage build: it compiles `src/java` and packages `web/` into a WAR itself (no local `dist/` needed, since that folder is gitignored and never reaches Railway), then runs it on Payara Micro. Pushing to the connected GitHub branch is enough to trigger a build — no local `Clean and Build` step required before pushing.
+
+If Railway already has a MySQL database service in the same project, add the web service's env vars as references to that service (`${{MySQL.MYSQLHOST}}`, `${{MySQL.MYSQLPORT}}`, `${{MySQL.MYSQLDATABASE}}`, `${{MySQL.MYSQLUSER}}`, `${{MySQL.MYSQLPASSWORD}}`) instead of retyping the `SOEM_DB_*` ones — `Conexion.java` already falls back to Railway's own `MYSQLHOST`/`MYSQLPORT`/`MYSQLDATABASE`/`MYSQLUSER`/`MYSQLPASSWORD`/`MYSQL_URL` variable names when the `SOEM_DB_*` ones aren't set.
