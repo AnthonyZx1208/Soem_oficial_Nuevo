@@ -3,7 +3,7 @@
         <div class="row g-4">
             <div class="col-md-5">
                 <h6><%=Util.escapeHtml(identidadFooter.getNombreTienda())%></h6>
-                <p class="mb-0"><%=identidadFooter.getDescripcionTienda()!=null?Util.escapeHtml(identidadFooter.getDescripcionTienda()):"Moda seleccionada para hombres, mujeres, niñas y niños. Precios en pesos colombianos."%></p>
+                <p class="mb-0"><%=identidadFooter.getDescripcionTienda()!=null?Util.escapeHtml(identidadFooter.getDescripcionTienda()):"Moda seleccionada para hombres y mujeres. Precios en pesos colombianos."%></p>
             </div>
             <div class="col-md-3">
                 <h6>Compra por WhatsApp</h6>

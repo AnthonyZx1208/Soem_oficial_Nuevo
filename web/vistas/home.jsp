@@ -4,13 +4,11 @@ NumberFormat cop=NumberFormat.getCurrencyInstance(new Locale("es","CO"));
 List<Categoria> categorias=(List<Categoria>)request.getAttribute("categorias");
 List<Producto> resultadosBusqueda=(List<Producto>)request.getAttribute("resultadosBusqueda");
 String termino=Util.parametroUtf8(request,"q");
-Categoria catHombres=null,catMujeres=null,catNinas=null,catNinos=null;
+Categoria catHombres=null,catMujeres=null;
 for(Categoria c:categorias){
     String n=c.getNombre_categoria()==null?"":c.getNombre_categoria().toLowerCase();
     if(n.contains("hombre"))catHombres=c;
     else if(n.contains("mujer"))catMujeres=c;
-    else if(n.contains("niña")||n.contains("nina"))catNinas=c;
-    else if(n.contains("niño")||n.contains("nino"))catNinos=c;
 }
 %><%!
 private String urlImagenCategoria(String ctx, String valor, String fallback) {
@@ -114,25 +112,7 @@ private String urlImagenCategoria(String ctx, String valor, String fallback) {
         <button class="carrusel-flecha carrusel-flecha--prev" type="button" onclick="document.getElementById('carruselOfertas').scrollBy({left:-500,behavior:'smooth'})" aria-label="Anterior">‹</button>
         <button class="carrusel-flecha carrusel-flecha--next" type="button" onclick="document.getElementById('carruselOfertas').scrollBy({left:500,behavior:'smooth'})" aria-label="Siguiente">›</button>
     </div>
-</section><%}if(catNinas!=null||catNinos!=null){%>
-
-    <section class="container py-5">
-        <p class="eyebrow">Explora</p>
-        <h2 class="section-title mb-4">Completa tu look</h2>
-        <div class="editorial-grid"><%if(catNinas!=null){%>
-            <a class="editorial-tile text-decoration-none" href="<%=ctx%>/categoria?id=<%=catNinas.getId_categoria()%>" style="background-image:url('<%=urlImagenCategoria(ctx,catNinas.getImagen_url(),"https://images.unsplash.com/photo-1519238263530-99bdd11df2ea?auto=format&fit=crop&w=900&q=80")%>')">
-                <div class="editorial-caption">
-                    <h3><%=Util.escapeHtml(catNinas.getNombre_categoria())%></h3>
-                    <span class="text-gold fw-bold">Ver colección →</span>
-                </div>
-            </a><%}if(catNinos!=null){%>
-            <a class="editorial-tile text-decoration-none" href="<%=ctx%>/categoria?id=<%=catNinos.getId_categoria()%>" style="background-image:url('<%=urlImagenCategoria(ctx,catNinos.getImagen_url(),"https://images.unsplash.com/photo-1503919545889-aef636e10ad4?auto=format&fit=crop&w=900&q=80")%>')">
-                <div class="editorial-caption">
-                    <h3><%=Util.escapeHtml(catNinos.getNombre_categoria())%></h3>
-                    <span class="text-gold fw-bold">Ver colección →</span>
-                </div>
-            </a><%}%></div>
-    </section><%}List<Producto> tira=destacados.size()>6?destacados.subList(0,6):destacados;if(!tira.isEmpty()){%>
+</section><%}List<Producto> tira=destacados.size()>6?destacados.subList(0,6):destacados;if(!tira.isEmpty()){%>
 
     <section class="container py-5">
         <h2 class="section-title mb-1">#SOEMOFICIAL</h2>
